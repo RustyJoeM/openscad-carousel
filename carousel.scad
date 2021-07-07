@@ -49,6 +49,11 @@ AXLE_RADIUS = 4;
 RIG_HEIGHT = 8;
 RIG_STR = 6;
 
+// Abstract "rings" carrying seats, and their distance off the carousel center
+// as a fraction of radius.
+RIG_RING_POSITIONS = [0.3, 0.6, 0.9];
+RIG_MAX_R = 0.90 * CAROUSEL_INSCRIBED_RADIUS;
+
 // ----------------------------------------------------------------------------
 
 // TODO - resolve case for different thickness of axle vs bearing inner diameter!
@@ -97,7 +102,6 @@ module carousel_axle() {
 }
 
 module leaning_cube(size, a, b) {
-//    echo(str("leaning cube from ", a, " to ", b));
     dir = b - a;
     h = norm(dir);
     if(dir[0] == 0 && dir[1] == 0) {
@@ -110,7 +114,6 @@ module leaning_cube(size, a, b) {
         w  = dir / h;
         u0 = cross(w, [0,0,1]);
         u  = u0 / norm(u0);
-//        echo(str("    dir = ", dir, "; h = ", h, "; w = ", w, "; u = ", u));
         v0 = cross(w, u);
         v  = v0 / norm(v0);
         multmatrix(m=[[u[0], v[0], w[0], a[0]],
@@ -200,10 +203,10 @@ module carousel_face() {
             // side verticals
             beam(BEAM_SIZE, [[DX - BLEED, 0, -2 * BLEED], [DX, 0, (FY + DY)/2 - BLEED]]);
             beam(BEAM_SIZE, [[-DX + BLEED, 0, -2 * BLEED], [-DX, 0, (FY + DY)/2 - BLEED]]);
-//            // roof
+            // roof
             beam(BEAM_SIZE, [[-FX + BLEED, 0, FF * FY], [-BLEED, 0, FY]]);
             beam(BEAM_SIZE, [[+FX - BLEED, 0, FF * FY], [+BLEED, 0, FY]]);
-//            // horizontal short sides
+            // horizontal short sides
             beam(BEAM_SIZE, [[-FX + BLEED, 0, DF1[1]*DY], [-DX + BLEED, 0, DF1[1]*DY]]);
             beam(BEAM_SIZE, [[+FX - BLEED, 0, DF1[1]*DY], [+DX - BLEED, 0, DF1[1]*DY]]);
             // arched shorts
@@ -251,33 +254,31 @@ module carousel_faces() {
 }
 
 module carousel_rig() {
-    ring_positions = [0.3, 0.6, 0.9];
     inner_sin = sin(360/CAROUSEL_FACE_COUNT/2);
-
-    max_r = 0.90 * CAROUSEL_INSCRIBED_RADIUS;
 
     color("SaddleBrown")
     translate([0, 0, 1.05 * FACE_DOOR_HEIGHT]) {
         // core ring
         difference() {
-            cylinder(h = RIG_HEIGHT, r = 0.1 * max_r, center = true);
+            cylinder(h = RIG_HEIGHT, r = 0.1 * RIG_MAX_R, center = true);
             cylinder(h = 1.1*RIG_HEIGHT, r = AXLE_RADIUS + EASE, center = true);
         }
         
         // outer ring
         difference() {
-            cylinder(h = RIG_HEIGHT, r = max_r, center = true);
-            cylinder(h = 1.1*RIG_HEIGHT, r = 0.95 * max_r, center = true);
+            cylinder(h = RIG_HEIGHT, r = RIG_MAX_R, center = true);
+            cylinder(h = 1.1*RIG_HEIGHT, r = 0.95 * RIG_MAX_R, center = true);
         }
 
         // iterate each face/wall spot
         for (i = [0 : CAROUSEL_FACE_COUNT]){
             rotate(i * 360/CAROUSEL_FACE_COUNT, [0, 0, 1]) {
                 // star-beam
-                beam(RIG_STR, [[0.05 * max_r, 0, 0], [max_r, 0, 0]]);
+                beam(RIG_STR, [[0.05 * RIG_MAX_R, 0, 0], [RIG_MAX_R, 0, 0]]);
                 // iterate nested "rings"
-                for (frac = ring_positions) {
-                    ring_r = frac * max_r;
+                // TODO - resolve overlap/offset with seat spikes
+                for (frac = RIG_RING_POSITIONS) {
+                    ring_r = frac * RIG_MAX_R;
                     translate([ring_r, 0, 0])
                     rotate([0, 0, 180 - FACE_ANGLE/2])
                     beam(RIG_STR, [[0, 0, 0], [2 * ring_r * inner_sin, 0, 0]]);
@@ -288,42 +289,53 @@ module carousel_rig() {
     }
 }
 
-ring_positions = [0.3, 0.6, 0.9];
-max_r = 0.90 * CAROUSEL_INSCRIBED_RADIUS;
-
 // helper to hint a position of odd/even seats placed on the base floor
 module seat_markers() {
     for (i = [0 : CAROUSEL_FACE_COUNT]){
         color("red")
         rotate(i * 360/CAROUSEL_FACE_COUNT, [0, 0, 1]) {
-            beam(1, [[0.05 * max_r, 0, 0], [max_r, 0, 0]]);
-            for (j = [0 : len(ring_positions)-1]) {
+            beam(1, [[0.05 * RIG_MAX_R, 0, 0], [RIG_MAX_R, 0, 0]]);
+            for (j = [0 : len(RIG_RING_POSITIONS)-1]) {
                 if ((i + j) % 2) {
-                    translate([ring_positions[j] * max_r, 0, 0])
+                    translate([RIG_RING_POSITIONS[j] * RIG_MAX_R, 0, 0])
                     rotate([0, 0, 180 - FACE_ANGLE/2])
                     sphere(r = AXLE_RADIUS);
                 }
             }
         }
     }
-    spot_cnt = CAROUSEL_FACE_COUNT/2 * len(ring_positions);
+    spot_cnt = CAROUSEL_FACE_COUNT/2 * len(RIG_RING_POSITIONS);
     echo(str("--- Total number of seat spots: ", spot_cnt));
 }
 
-// TODO
-module carouseled() {
-    color("red")
-    cylinder(h = 1.05 * FACE_DOOR_HEIGHT, r = AXLE_RADIUS/3);
+// Auxiliary module to position child nodes into specific carousel seat slot.
+//     ring_index - which ring of seats to mount to, innermost (0) to outermost
+//     position_index - position/face index on the specified ring
+module carousel_slot(ring_index, position_index) {
+    assert(ring_index < len(RIG_RING_POSITIONS), "Ring index too big!");
+    assert(position_index < CAROUSEL_FACE_COUNT, "Ring position too big!");
 
-    translate([0, 0, ring_positions[0] * max_r])
-    intersection() {
-//        cylinder(h = , r = );
-        children();
+    rotate(360/CAROUSEL_FACE_COUNT * position_index, [0, 0, 1])
+    translate([RIG_RING_POSITIONS[ring_index] * RIG_MAX_R, 0, 0]) {
+        cylinder(h = 1.05 * FACE_DOOR_HEIGHT, r = AXLE_RADIUS/3);
+        // TODO - resolve scaling
+        intersection() {
+            translate([0, 0, -EASE])
+            cylinder(h = FACE_DOOR_HEIGHT + 2 * EASE, r = CAROUSEL_INSCRIBED_RADIUS/len(RIG_RING_POSITIONS) + EASE);
+            children();
+        }
     }
 }
 
 // ----------------------------------------------------------------------------
 
-carousel_base();
-carousel_axle();
-carousel_faces();
+module carousel() {
+    carousel_base();
+    carousel_axle();
+    carousel_faces();
+    carousel_rig();
+}
+
+carousel();
+
+//carousel_slot(0, 1) cylinder(40, 10, 10);
