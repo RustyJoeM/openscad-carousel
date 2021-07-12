@@ -11,8 +11,13 @@ It should be easy to customize resulting model using the constants in the code, 
 
 Model can and most probably will change extensively in upcoming weeks (summer of 2021).
 
+# usage example
+
+See file `carousel-usage-example.scad` for a simple example on how to use the `carousel.scad` to easily attach own module/object into carousel for testing purposes.
+
+# TODO
+
 Next steps / the plan is to:
 
-- finalize base model
-- add auxiliary methods to allow easily mounting any seats/custom OpenSCAD models into proper positions
+- finalize/clean-up the base model
 - add auxiliary methods to create a split 3D printable parts easily fittable into standard home printer bed

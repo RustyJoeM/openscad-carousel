@@ -289,29 +289,10 @@ module carousel_rig() {
     }
 }
 
-// helper to hint a position of odd/even seats placed on the base floor
-module seat_markers() {
-    for (i = [0 : CAROUSEL_FACE_COUNT]){
-        color("red")
-        rotate(i * 360/CAROUSEL_FACE_COUNT, [0, 0, 1]) {
-            beam(1, [[0.05 * RIG_MAX_R, 0, 0], [RIG_MAX_R, 0, 0]]);
-            for (j = [0 : len(RIG_RING_POSITIONS)-1]) {
-                if ((i + j) % 2) {
-                    translate([RIG_RING_POSITIONS[j] * RIG_MAX_R, 0, 0])
-                    rotate([0, 0, 180 - FACE_ANGLE/2])
-                    sphere(r = AXLE_RADIUS);
-                }
-            }
-        }
-    }
-    spot_cnt = CAROUSEL_FACE_COUNT/2 * len(RIG_RING_POSITIONS);
-    echo(str("--- Total number of seat spots: ", spot_cnt));
-}
-
 // Auxiliary module to position child nodes into specific carousel seat slot.
 //     ring_index - which ring of seats to mount to, innermost (0) to outermost
 //     position_index - position/face index on the specified ring
-module carousel_slot(ring_index, position_index) {
+module carousel_slotted(ring_index, position_index) {
     assert(ring_index < len(RIG_RING_POSITIONS), "Ring index too big!");
     assert(position_index < CAROUSEL_FACE_COUNT, "Ring position too big!");
 
@@ -327,6 +308,20 @@ module carousel_slot(ring_index, position_index) {
     }
 }
 
+// Helper to place a child nodes into odd/even spots around carousel.
+module carousel_scattered() {
+    for (i = [0 : len(RIG_RING_POSITIONS)-1]) {
+        for (j = [0 : CAROUSEL_FACE_COUNT-1]) {
+            if ((i + j) % 2) {
+                carousel_slotted(i, j)
+                children();
+            }
+        }
+    }
+    spot_cnt = CAROUSEL_FACE_COUNT/2 * len(RIG_RING_POSITIONS);
+    echo(str("--- Total number of seat spots: ", spot_cnt));
+}
+
 // ----------------------------------------------------------------------------
 
 module carousel() {
@@ -337,5 +332,3 @@ module carousel() {
 }
 
 carousel();
-
-//carousel_slot(0, 1) cylinder(40, 10, 10);
