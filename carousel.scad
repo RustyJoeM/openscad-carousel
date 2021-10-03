@@ -20,7 +20,8 @@ CAROUSEL_INSCRIBED_RADIUS = CAROUSEL_ESCRIBED_RADIUS * cos(180/CAROUSEL_FACE_COU
 
 // Base of the carousel -> stand that holds the axle, walls, etc.
 BASE_TOTAL_HEIGHT = 24;
-BASE_FLOOR_HEIGHT = 8;
+BASE_FLOOR_THICKNESS = 4;
+BASE_WALL_THICKNESS = 4;
 // ---- derived
 BASE_RADIUS = 1.05 * CAROUSEL_ESCRIBED_RADIUS; // to include/cover carousel walls
 
@@ -41,6 +42,7 @@ ROOF_HEIGHT = 1.3 * FACE_HEIGHT;
 BEARING_OUTER_D = 22;
 BEARING_INNER_D = 8;
 BEARING_HEIGHT = 7;
+BEARING_SHELL_THICKNESS = 2;
 
 // Axle rotating inside carousel.
 AXLE_RADIUS = 4;
@@ -58,47 +60,73 @@ RIG_MAX_R = 0.90 * CAROUSEL_INSCRIBED_RADIUS;
 
 // TODO - resolve case for different thickness of axle vs bearing inner diameter!
 module bearing_socket() {
-    PAD_F = 0.25;
     difference() {
         // socket body
-        cylinder(h = (1 + PAD_F) * BEARING_HEIGHT, d = 1.5 * BEARING_OUTER_D, $fn = CYL_FN);
+        cylinder(h = BEARING_SHELL_THICKNESS + BEARING_HEIGHT, r = 0.5 * BEARING_OUTER_D + EASE + BEARING_SHELL_THICKNESS, $fn = CYL_FN);
         // bearing slot
-        translate([0, 0, PAD_F * BEARING_HEIGHT - EASE])
-        cylinder(h = 1.1 * BEARING_HEIGHT, d = BEARING_OUTER_D + EASE, $fn = CYL_FN);
-        translate([0, 0, -0.05 * PAD_F * BEARING_HEIGHT])
-        cylinder(h = 1.1 * PAD_F * BEARING_HEIGHT, d = BEARING_INNER_D + EASE, $fn = CYL_FN);
-        // TODO - rig pass-through hole - maybe not needed?
+        translate([0, 0, BEARING_SHELL_THICKNESS])
+        cylinder(h = BEARING_HEIGHT + EASE, d = BEARING_OUTER_D + EASE, $fn = CYL_FN);
+        // axle hole
+        translate([0, 0, - 0.5 * EASE])
+        cylinder(h = BEARING_SHELL_THICKNESS + EASE, r = AXLE_RADIUS + EASE, $fn = CYL_FN);
     }
 }
 
 module carousel_base() {
     color("BurlyWood") {
         // floor plate
-        translate([0, 0, -BASE_FLOOR_HEIGHT/2])
+        translate([0, 0, -BASE_FLOOR_THICKNESS/2])
         difference() {
-            cylinder(h = BASE_FLOOR_HEIGHT, r = BASE_RADIUS, center = true, $fn = CYL_FN);
-            cylinder(h = 1.1 * BASE_FLOOR_HEIGHT, r = AXLE_RADIUS + EASE, center = true, $fn = CYL_FN);
+            cylinder(h = BASE_FLOOR_THICKNESS, r = BASE_RADIUS, center = true, $fn = CYL_FN);
+            cylinder(h = BASE_FLOOR_THICKNESS + BLEED, r = AXLE_RADIUS + EASE, center = true, $fn = CYL_FN);
         }
-
         // rim/side wall
-        edge_height = BASE_TOTAL_HEIGHT - BASE_FLOOR_HEIGHT;
-        translate([0, 0, -edge_height/2 - BASE_FLOOR_HEIGHT + BLEED])
+        edge_height = BASE_TOTAL_HEIGHT - BASE_FLOOR_THICKNESS + BLEED;
+        translate([0, 0, -0.5 * edge_height - BASE_FLOOR_THICKNESS + BLEED])
         difference() {
             cylinder(h = edge_height, r = BASE_RADIUS, center = true, $fn = CYL_FN);
-            cylinder(h = 1.1 * edge_height, r = BASE_RADIUS - BASE_FLOOR_HEIGHT, center = true, $fn = CYL_FN);
+            cylinder(h = edge_height + BLEED, r = BASE_RADIUS - BASE_WALL_THICKNESS, center = true, $fn = CYL_FN);
         }
-
         // bearing socket
-        assert(BASE_FLOOR_HEIGHT + BEARING_HEIGHT < BASE_TOTAL_HEIGHT, "Bearing height is too big to fit into raised base");
-        translate([0, 0, -BASE_FLOOR_HEIGHT])
+        assert(BASE_FLOOR_THICKNESS + BEARING_HEIGHT < BASE_TOTAL_HEIGHT, "Bearing height is too big to fit into raised base");
+        translate([0, 0, -BASE_FLOOR_THICKNESS])
         rotate([0, 180, 0])
         bearing_socket();
     }
 }
 
+module base_part(n = CAROUSEL_FACE_COUNT) {
+    xx = 2 * (BASE_RADIUS + EASE);
+    yy = BASE_RADIUS + 2 * EASE;
+    zz = 2 * (BASE_TOTAL_HEIGHT + EASE);
+    difference() {
+        carousel_base();
+        translate([0, -0.5*yy, 0])
+            cube([xx, yy, zz], center = true);
+        rotate(360/n)    
+        translate([0, 0.5 * yy, 0])
+            cube([xx, yy, zz], center = true);
+    }
+}
+
+//base_part();
+
 module carousel_axle() {
-    color("SaddleBrown")
-    cylinder(h = ROOF_HEIGHT, r = AXLE_RADIUS);
+    top_height = BASE_TOTAL_HEIGHT;
+    axle_height = ROOF_HEIGHT + BASE_TOTAL_HEIGHT - EASE + top_height;
+
+    color("SaddleBrown") {
+        // top axle arms
+        translate([0, 0, ROOF_HEIGHT + top_height/2])
+        for (i = [0 : CAROUSEL_FACE_COUNT/2]){
+            rotate(2 * i * 360/CAROUSEL_FACE_COUNT, [0, 0, 1])
+            cube([20, 3, 3]);
+        }    
+
+        // core axle
+        translate([0, 0, -BASE_TOTAL_HEIGHT + EASE])
+        cylinder(h = axle_height, r = AXLE_RADIUS);
+    }
 }
 
 module leaning_cube(size, a, b) {
