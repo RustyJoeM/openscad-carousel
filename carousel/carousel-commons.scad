@@ -22,10 +22,10 @@ module square_prism(size, p0, p1) {
     }
 }
 
-module point_plate(thickness, points) {
+module point_plate(thickness, point_array, indices) {
     hull() {
-        for (i = [0 : len(points)-1]){
-            translate(points[i])
+        for (i = indices) {
+            translate(point_array[i])
             sphere(d = thickness);
         }
     }

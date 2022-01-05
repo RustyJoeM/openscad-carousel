@@ -35,7 +35,7 @@ FACE_DOOR_WIDTH = 0.75 * FACE_WIDTH;
 
 // Roof of the carousel.
 ROOF_THICKNESS = 2;
-ROOF_HEIGHT = 1.3 * FACE_HEIGHT;
+ROOF_HEIGHT = 0.3 * FACE_HEIGHT;
 
 // Ball bearing - real-life dimensions of ball bearing used to "power" the axle.
 BEARING_OUTER_D = 22;

@@ -1,5 +1,5 @@
 // Import carousel core file.
-use <carousel.scad>;
+use <carousel/carousel.scad>;
 
 // This is a custom seat model to be added to carousel.
 // Might have been imported from other file as well...
