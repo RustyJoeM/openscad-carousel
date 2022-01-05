@@ -45,7 +45,7 @@ module base_part(n = CAROUSEL_FACE_COUNT) {
         carousel_base();
         translate([0, -0.5*yy, 0])
             cube([xx, yy, zz], center = true);
-        rotate(360/n)    
+        rotate(360/n)
         translate([0, 0.5 * yy, 0])
             cube([xx, yy, zz], center = true);
     }

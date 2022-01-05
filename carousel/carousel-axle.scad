@@ -17,7 +17,7 @@ module carousel_axle_arms() {
                     rotate(2 * i * 360/CAROUSEL_FACE_COUNT, [0, 0, 1])
                     translate([0, -arm_width/2, 0])
                     cube([arm_length, arm_width, arm_height]);
-                }    
+                }
             }
             translate([0, 0, -BLEED/2])
                 cylinder(h = arm_height + BLEED, r = AXLE_RADIUS + EASE);
@@ -30,7 +30,7 @@ module carousel_axle() {
         cylinder(h = axle_height, r = AXLE_RADIUS);
         translate([0, 0, axle_height - 3 * arm_height])
             cylinder(h = 2 * AXLE_RADIUS, r1 = AXLE_RADIUS, r2 = 2 * AXLE_RADIUS);
-    }    
+    }
 }
 
 // just for presentation, for 3D print the separate parts are better...
