@@ -1,5 +1,5 @@
 include <carousel-config.scad>;
-use <carousel-commons.scad>;
+use <commons.scad>;
 
 BASE_RADIUS = 1.05 * CAROUSEL_ESCRIBED_RADIUS; // to include/cover carousel walls
 

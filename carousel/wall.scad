@@ -1,5 +1,5 @@
 include <carousel-config.scad>;
-use <carousel-commons.scad>;
+use <commons.scad>;
 
 include <wall-commons.scad>;
 use <wall-core.scad>;
@@ -8,6 +8,9 @@ use <wall-struts.scad>;
 use <wall-roof.scad>;
 
 module carousel_wall_mounted() {
+    // for mounting struts on core
+    STRUT_DZ = FACE_THICKNESS/2 + STRUT_OVERRUN + EASE;
+
     rotate([90, 0, 0]) {
         carousel_wall_core();
         carousel_door_strut();
@@ -36,5 +39,5 @@ module carousel_faces_mounted() {
     }
 }
 
-// carousel_wall_mounted();
-carousel_faces_mounted();
+// carousel_faces_mounted();
+carousel_wall_mounted();

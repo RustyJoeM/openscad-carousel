@@ -1,4 +1,4 @@
-module square_prism(size, p0, p1) {
+module rect_prism(width, height, p0, p1) {
     dir = p1 - p0;
     h = norm(dir);
     if (dir[0] == 0 && dir[1] == 0) {
@@ -18,15 +18,19 @@ module square_prism(size, p0, p1) {
                       [u[2], v[2], w[2], p0.z],
                       [0,    0,    0,    1]])
         translate([0, 0, h/2])
-        cube([size, size, h], center = true);
+        cube([width, height, h], center = true);
     }
 }
 
-module point_plate(thickness, point_array, indices) {
+module square_prism(size, p0, p1) {
+    rect_prism(size, size, p0, p1);
+}
+
+module point_plate(thickness, point_array, indices, fn = 8) {
     hull() {
         for (i = indices) {
             translate(point_array[i])
-            sphere(d = thickness);
+            sphere(d = thickness, $fn = fn);
         }
     }
 }

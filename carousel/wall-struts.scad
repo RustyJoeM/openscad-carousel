@@ -1,8 +1,9 @@
-use <carousel-commons.scad>;
+use <commons.scad>;
 include <wall-commons.scad>;
 
 use <wall-commons.scad>;
 use <wall-column.scad>;
+use <wall-core.scad>;
 use <wall-struts-pegs.scad>;
 
 module carousel_door_strut(z_centered = true) {
@@ -39,31 +40,31 @@ module _beam_stuts_shape() {
         [[-FX + BLEED, door_straight_part_height], [-FACE_DOOR_WIDTH/2 + BLEED, door_straight_part_height]],
         [[+FX - BLEED, door_straight_part_height], [+FACE_DOOR_WIDTH/2 - BLEED, door_straight_part_height]],
     ];
-
     for (s = straight_struts) {
-        square_prism(BEAM_SIZE, [s[0].x, s[0].y, 0], [s[1].x, s[1].y, 0]);
+        rect_prism(BEAM_SIZE, STRUT_OVERRUN, [s[0].x, s[0].y, 0], [s[1].x, s[1].y, 0]);
     }
 
     // under-roof beams
     top_y = FY - 0.5 * BEAM_SIZE - EASE;
-    square_prism(BEAM_SIZE, [-FX + BLEED, top_horizontal_y, 0], [0, top_y, 0]);
-    square_prism(BEAM_SIZE, [0, top_y, 0], [+FX - BLEED, top_horizontal_y, 0]);
+    rect_prism(BEAM_SIZE, STRUT_OVERRUN, [-FX + BLEED, top_horizontal_y + BLEED, 0], [0, top_y, 0]);
+    rect_prism(BEAM_SIZE, STRUT_OVERRUN, [0, top_y, 0], [+FX - BLEED, top_horizontal_y + BLEED, 0]);
 }
 
 module carousel_wall_struts() {
     color(STRUTS_COLOR) {
-        difference() {
-            // reduce square prism beams to a thinner layer placed on top of wall core
-            translate([0, 0, 0.5 * STRUT_OVERRUN])
-            intersection() {
+        intersection() {
+            difference() {
+                // move structs on top of wall core
+                translate([0, 0, 0.5 * STRUT_OVERRUN])
                 _beam_stuts_shape();
-                translate([0, FACE_HEIGHT/2, 0])
-                cube([FACE_WIDTH, FACE_HEIGHT, STRUT_OVERRUN], center = true);
+                // cut off the parts inside of door area
+                door_shape(width = FACE_DOOR_WIDTH + EASE, height = FACE_DOOR_HEIGHT + EASE, thickness = (FACE_THICKNESS + BLEED), ground_bleed = 5 * BLEED);
+                // cut off side columns
+                translate([0, 0, 1.0 * FACE_THICKNESS - 0.5 * STRUT_OVERRUN])
+                columns_side_holes();
             }
-            // and cut off the parts inside of door area
-            door_shape(width = FACE_DOOR_WIDTH + EASE, height = FACE_DOOR_HEIGHT + EASE, thickness = (FACE_THICKNESS + BLEED), ground_bleed = 2 * BLEED);
-            // and side columns
-            columns_side_holes();
+            // drop any core shape overruns
+            carousel_wall_core_shape();
         }
         // add pegs into wall core
         for (p = peg_points()){

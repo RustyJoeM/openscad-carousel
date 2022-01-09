@@ -10,9 +10,6 @@ STRUT_OVERRUN = 0.25 * FACE_THICKNESS;
 
 STRUTS_COLOR = "SaddleBrown";
 
-// for mounting struts on core
-STRUT_DZ = FACE_THICKNESS/2 + STRUT_OVERRUN + EASE;
-
 module door_shape(width, height, thickness, ground_bleed = 0) {
     radius = width/2;
     straight_height = height - radius;

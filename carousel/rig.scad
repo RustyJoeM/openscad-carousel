@@ -1,5 +1,5 @@
 include <carousel-config.scad>;
-use <carousel-commons.scad>;
+use <commons.scad>;
 
 // Top rotating part used to attach the carousel seats.
 module carousel_rig() {
