@@ -16,11 +16,11 @@ module carousel_wall_mounted() {
         carousel_door_strut();
 
         translate([0, 0, -STRUT_DZ])
-        carousel_wall_struts();
+        carousel_wall_struts_inner();
 
         translate([0, 0, STRUT_DZ])
         rotate([0, 180, 0])
-        carousel_wall_struts();
+        carousel_wall_struts_outer();
     }
 
     carousel_roof_mounted();
@@ -40,4 +40,6 @@ module carousel_faces_mounted() {
 }
 
 // carousel_faces_mounted();
-carousel_wall_mounted();
+// carousel_wall_mounted();
+
+// BEWARE! Parts to be printed not directly here, but in sub-modules...

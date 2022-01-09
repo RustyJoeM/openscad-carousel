@@ -25,7 +25,7 @@ module carousel_wall_core() {
         // strut joint holes
         for (p = peg_points()) {
             translate([p.x, p.y, -FACE_THICKNESS/2 - 0.5*BLEED])
-            strut_peg(FACE_THICKNESS + BLEED); // TODO align for strut beams more nicely
+            strut_peg(FACE_THICKNESS + BLEED, diam_ease = EASE);
         }
         // side columns
         columns_side_holes();

@@ -18,7 +18,7 @@ module carousel_door_strut(z_centered = true) {
     }
 }
 
-module _beam_stuts_shape() {
+module _uncut_struts() {
     door_straight_part_height = FACE_DOOR_HEIGHT - FACE_DOOR_WIDTH/2;
 
     beam_correction = BEAM_SIZE/2;
@@ -50,18 +50,15 @@ module _beam_stuts_shape() {
     rect_prism(BEAM_SIZE, STRUT_OVERRUN, [0, top_y, 0], [+FX - BLEED, top_horizontal_y + BLEED, 0]);
 }
 
-module carousel_wall_struts() {
+module _cut_struts() {
     color(STRUTS_COLOR) {
         intersection() {
             difference() {
                 // move structs on top of wall core
                 translate([0, 0, 0.5 * STRUT_OVERRUN])
-                _beam_stuts_shape();
+                _uncut_struts();
                 // cut off the parts inside of door area
                 door_shape(width = FACE_DOOR_WIDTH + EASE, height = FACE_DOOR_HEIGHT + EASE, thickness = (FACE_THICKNESS + BLEED), ground_bleed = 5 * BLEED);
-                // cut off side columns
-                translate([0, 0, 1.0 * FACE_THICKNESS - 0.5 * STRUT_OVERRUN])
-                columns_side_holes();
             }
             // drop any core shape overruns
             carousel_wall_core_shape();
@@ -74,7 +71,40 @@ module carousel_wall_struts() {
     }
 }
 
+module carousel_wall_struts_outer() {
+    difference() {
+        _cut_struts();
+        // cut off side columns
+        translate([0, 0, 0.5 * FACE_THICKNESS  + STRUT_OVERRUN])
+        columns_side_holes();
+    }
+}
+
+// inside part of carousel wall - has shorter strut on sides to fit (not overlap segments) near column
+module carousel_wall_struts_inner() {
+    // TODO - this should be unified with all the wall mounting chaos in some common fn?
+    dy = -FACE_APOTHEM_LEN + (FACE_THICKNESS/2 + STRUT_OVERRUN + EASE);
+    rotate([-90, 0, 0])
+    translate([0, -dy, 0])
+    difference() {
+        translate([0, dy, 0])
+        rotate([90, 0, 0])
+        _cut_struts();
+        // cut off side columns on both sides
+        rotate([0, 0, -360/CAROUSEL_FACE_COUNT])
+        translate([0, dy, 0])
+        rotate([90, 0, 0])
+        translate([0, 0, 0.5 * FACE_THICKNESS + STRUT_OVERRUN])
+        columns_side_holes();
+        // plus cut off right side inner struts overlap
+        rotate([0, 0, +360/CAROUSEL_FACE_COUNT])
+        translate([-FX, dy - FACE_THICKNESS, 0])
+        cube([FACE_THICKNESS + STRUT_OVERRUN, FACE_THICKNESS, FACE_HEIGHT]);
+    }
+}
+
 carousel_door_strut(z_centered = false);
-carousel_wall_struts();
+carousel_wall_struts_outer();
+// carousel_wall_struts_inner();
 
 // TODO - address the door frame split of struts
