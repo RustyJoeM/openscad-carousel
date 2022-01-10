@@ -1,7 +1,6 @@
 include <carousel-config.scad>;
 include <wall-commons.scad>;
 
-COLUMN_HEIGHT = FF * FY + 0.0 * BEAM_SIZE;
 _COLUMN_DIAM = BEAM_SIZE + 2 * STRUT_OVERRUN;
 
 module carousel_wall_column(diam_bleed = 0, ground_bleed = 0, height = COLUMN_HEIGHT) {
@@ -13,9 +12,9 @@ module carousel_wall_column(diam_bleed = 0, ground_bleed = 0, height = COLUMN_HE
 
 module columns_side_holes() {
     translate([-FX, 0, 0])
-        carousel_wall_column(diam_bleed = EASE, ground_bleed = BLEED, height = COLUMN_HEIGHT + BEAM_SIZE);
+        carousel_wall_column(diam_bleed = EASE, ground_bleed = BLEED, height = 2 * COLUMN_HEIGHT);
     translate([FX, 0, 0])
-        carousel_wall_column(diam_bleed = EASE, ground_bleed = BLEED, height = COLUMN_HEIGHT + BEAM_SIZE);
+        carousel_wall_column(diam_bleed = EASE, ground_bleed = BLEED, height = 2 * COLUMN_HEIGHT);
 }
 
 JOINT_DIMENSIONS = [0.25 * _COLUMN_DIAM, 0.75 * _COLUMN_DIAM, 0.25 * _COLUMN_DIAM];

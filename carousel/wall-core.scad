@@ -2,6 +2,7 @@ include <carousel-config.scad>;
 include <wall-commons.scad>;
 use <wall-column.scad>;
 use <wall-struts-pegs.scad>;
+use <wall-roof.scad>;
 
 module carousel_wall_core_shape() {
     _face_xy_points = [
@@ -29,6 +30,16 @@ module carousel_wall_core() {
         }
         // side columns
         columns_side_holes();
+        // roof connectors
+        translate([0, FY * FF, 0]) {
+            translate([+FX/2, 0, 0])
+            rotate([-90, 180, 0])
+            roof_connector_joint(is_hole_mode = true);
+
+            translate([-FX/2, 0, 0])
+            rotate([-90, 0, 0])
+            roof_connector_joint(is_hole_mode = true);
+        }
     }
 }
 

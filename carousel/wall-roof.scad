@@ -38,6 +38,26 @@ ey = max_y * (max_z - canopy_height) / max_z;
 
 alpha = atan((max_z - canopy_height) / ey);
 
+module roof_connector_joint(is_hole_mode = false) {
+
+    max_z = ROOF_HEIGHT/2;
+
+    width = FX/5 + (is_hole_mode ? EASE : 0);
+    thickness = 0.5 * FACE_THICKNESS + (is_hole_mode ? EASE : 0);
+
+    h1 = (FX/2-width/2)/FX * max_z;
+    h2 = (FX/2+width/2)/FX * max_z;
+
+    points = [[-width/2, 0], [+width/2, 0], [+width/2, h2], [-width/2, h1]];
+
+    bleed_z_fix = is_hole_mode ? BLEED : 0;
+
+    translate([0, 0, bleed_z_fix])
+    rotate([90, 0, 0])
+    linear_extrude(thickness, center = true)
+    polygon(points);
+}
+
 module roof_shape() {
 
     key_points = [
@@ -74,10 +94,16 @@ module roof_shape() {
         rect_prism(edge_width, 1.5 * ROOF_THICKNESS, key_points[4], key_points[7]);
 
         // TODO - cut off and make stadanlone connector
-        // color("red")
         translate([0, 0, 1.0 * ROOF_THICKNESS])
         rect_prism(edge_width, 1.5 * ROOF_THICKNESS, key_points[0], key_points[1]);
 
+        // roof to wall connectors
+        translate([+FX/2, 0, 0])
+        rotate([0, 0, 180])
+        roof_connector_joint();
+
+        translate([-FX/2, 0, 0])
+        roof_connector_joint();
     }
 
 }
@@ -103,9 +129,10 @@ module carousel_roof_segment() {
 }
 
 module carousel_roof_mounted() {
-    translate([0, 0, FF*FY + 0.2 * BEAM_SIZE])
+    translate([0, 0, FF*FY + 0.5 * ROOF_THICKNESS])
     trimmed_roof();
 }
 
 // carousel_roof_mounted();
+// roof_connector_joint();
 carousel_roof_segment();
