@@ -10,7 +10,7 @@ module carousel_door_strut(z_centered = true) {
     door_strut_thickness = FACE_THICKNESS + 2 * STRUT_OVERRUN;
     dz = (z_centered == true) ? 0 : 0.5*door_strut_thickness;
 
-    color(STRUTS_COLOR)
+    color(COLOR_STRUTS)
     translate([0, 0, dz])
     difference() {
         door_shape(width = FACE_DOOR_WIDTH - EASE, height = FACE_DOOR_HEIGHT - EASE, thickness = door_strut_thickness, ground_bleed = 0);
@@ -51,7 +51,7 @@ module _uncut_struts() {
 }
 
 module _cut_struts() {
-    color(STRUTS_COLOR) {
+    color(COLOR_STRUTS) {
         intersection() {
             difference() {
                 // move structs on top of wall core

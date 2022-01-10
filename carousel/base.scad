@@ -14,7 +14,7 @@ module _bearing_socket() {
 }
 
 module carousel_base() {
-    color("BurlyWood")
+    color(COLOR_BASE)
     difference() {
         union() {
             // floor plate

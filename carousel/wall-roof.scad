@@ -74,7 +74,7 @@ module roof_shape() {
 
     edge_width = 1.0 * ROOF_THICKNESS;
 
-    color("PaleGreen") {
+    color(COLOR_ROOF) {
         // main left
         point_plate(ROOF_THICKNESS, key_points, [0, 1, 4]);
         // main right

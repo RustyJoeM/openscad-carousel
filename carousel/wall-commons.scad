@@ -9,8 +9,6 @@ COLUMN_HEIGHT = FF * FY - 0.0 * BEAM_SIZE;
 
 STRUT_OVERRUN = 0.2 * FACE_THICKNESS;
 
-STRUTS_COLOR = "SaddleBrown";
-
 module door_shape(width, height, thickness, ground_bleed = 0) {
     radius = width/2;
     straight_height = height - radius;

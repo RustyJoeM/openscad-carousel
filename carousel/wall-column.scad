@@ -4,7 +4,7 @@ include <wall-commons.scad>;
 _COLUMN_DIAM = BEAM_SIZE + 2 * STRUT_OVERRUN;
 
 module carousel_wall_column(diam_bleed = 0, ground_bleed = 0, height = COLUMN_HEIGHT) {
-    color(STRUTS_COLOR)
+    color(COLOR_STRUTS)
     rotate([-90, 0, 0])
     translate([0, 0, -ground_bleed])
         cylinder(h = height + ground_bleed, d = _COLUMN_DIAM + diam_bleed);
@@ -26,7 +26,7 @@ module carousel_wall_column_half() {
     cutoff_length = COLUMN_HEIGHT + BLEED;
     cuttof_height = _COLUMN_DIAM/2 + BLEED;
 
-    color(STRUTS_COLOR)
+    color(COLOR_STRUTS)
     difference() {
         carousel_wall_column();
         // remove bottom half of column
@@ -45,7 +45,7 @@ module carousel_wall_column_peg() {
     y = JOINT_DIMENSIONS.y;
     z = JOINT_DIMENSIONS.x;
 
-    color(STRUTS_COLOR)
+    color(COLOR_STRUTS)
     translate([0, 0, z/2])
     cube([x, y, z], center = true);
 }

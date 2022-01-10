@@ -17,7 +17,7 @@ module carousel_wall_core_shape() {
 }
 
 module carousel_wall_core() {
-    color("Gold")
+    color(COLOR_WALL)
     difference() {
         // main mass/wall
         carousel_wall_core_shape();

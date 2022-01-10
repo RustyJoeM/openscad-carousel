@@ -1,7 +1,5 @@
 include <carousel-config.scad>;
 
-_AXLE_COLOR = "SaddleBrown";
-
 arm_height = 2 * AXLE_RADIUS;
 axle_height = ROOF_HEIGHT + BASE_TOTAL_HEIGHT - EASE;
 
@@ -9,7 +7,7 @@ module carousel_axle_arms() {
     arm_length = 8 * AXLE_RADIUS;
     arm_width = AXLE_RADIUS;
 
-    color(_AXLE_COLOR) {
+    color(COLOR_AXLE) {
         difference() {
             union() {
                 cylinder(h = arm_height, r = 2 * AXLE_RADIUS);
@@ -26,7 +24,7 @@ module carousel_axle_arms() {
 }
 
 module carousel_axle() {
-    color(_AXLE_COLOR) {
+    color(COLOR_AXLE) {
         cylinder(h = axle_height, r = AXLE_RADIUS);
         translate([0, 0, axle_height - 3 * arm_height])
             cylinder(h = 2 * AXLE_RADIUS, r1 = AXLE_RADIUS, r2 = 2 * AXLE_RADIUS);
@@ -64,7 +62,7 @@ module carousel_axle_peg() {
     y = PEG_SIZE.y * 2;
     z = PEG_SIZE.x;
 
-    color(_AXLE_COLOR)
+    color(COLOR_AXLE)
     cube([x, y, z], center = true);
 }
 

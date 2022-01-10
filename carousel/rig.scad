@@ -5,7 +5,7 @@ use <commons.scad>;
 module carousel_rig() {
     inner_sin = sin(360/CAROUSEL_FACE_COUNT/2);
 
-    color("SaddleBrown") {
+    color(COLOR_AXLE) {
         // core ring
         difference() {
             cylinder(h = RIG_HEIGHT, r = 0.1 * RIG_MAX_R);

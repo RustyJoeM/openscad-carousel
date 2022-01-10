@@ -54,3 +54,9 @@ RIG_STR = 6;
 // as a fraction of radius.
 RIG_RING_POSITIONS = [0.3, 0.6, 0.9];
 RIG_MAX_R = 0.90 * CAROUSEL_INSCRIBED_RADIUS;
+
+COLOR_WALL = "BurlyWood";
+COLOR_STRUTS = "SaddleBrown";
+COLOR_BASE = "DarkGray";
+COLOR_ROOF = "DarkSeaGreen";
+COLOR_AXLE = "SaddleBrown";
