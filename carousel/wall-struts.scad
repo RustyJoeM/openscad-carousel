@@ -6,14 +6,14 @@ use <wall-column.scad>;
 use <wall-core.scad>;
 use <wall-struts-pegs.scad>;
 
-module carousel_door_strut(z_centered = true) {
+module carousel_door_strut(z_centered = false, ease = EASE) {
     door_strut_thickness = FACE_THICKNESS + 2 * STRUT_OVERRUN;
     dz = (z_centered == true) ? 0 : 0.5*door_strut_thickness;
 
     color(COLOR_STRUTS)
     translate([0, 0, dz])
     difference() {
-        door_shape(width = FACE_DOOR_WIDTH - EASE, height = FACE_DOOR_HEIGHT - EASE, thickness = door_strut_thickness, ground_bleed = 0);
+        door_shape(width = FACE_DOOR_WIDTH - ease, height = FACE_DOOR_HEIGHT - ease, thickness = door_strut_thickness, ground_bleed = 0);
         door_shape(width = FACE_DOOR_WIDTH - 2 * BEAM_SIZE, height = FACE_DOOR_HEIGHT - BEAM_SIZE, thickness = (door_strut_thickness + BLEED), ground_bleed = 2 * BLEED);
     }
 }
@@ -61,7 +61,7 @@ module _cut_struts() {
                 door_shape(width = FACE_DOOR_WIDTH + EASE, height = FACE_DOOR_HEIGHT + EASE, thickness = (FACE_THICKNESS + BLEED), ground_bleed = 5 * BLEED);
             }
             // drop any core shape overruns
-            carousel_wall_core_shape();
+            wall_core_shape();
         }
         // add pegs into wall core
         for (p = peg_points()){
@@ -76,7 +76,7 @@ module carousel_wall_struts_outer() {
         _cut_struts();
         // cut off side columns
         translate([0, 0, 0.5 * FACE_THICKNESS  + STRUT_OVERRUN])
-        columns_side_holes();
+        column_side_holes();
     }
 }
 
@@ -95,7 +95,7 @@ module carousel_wall_struts_inner() {
         translate([0, dy, 0])
         rotate([90, 0, 0])
         translate([0, 0, 0.5 * FACE_THICKNESS + STRUT_OVERRUN])
-        columns_side_holes();
+        column_side_holes();
         // plus cut off right side inner struts overlap
         rotate([0, 0, +360/CAROUSEL_FACE_COUNT])
         translate([-FX, dy - FACE_THICKNESS, 0])
@@ -103,8 +103,8 @@ module carousel_wall_struts_inner() {
     }
 }
 
-carousel_door_strut(z_centered = false);
+carousel_door_strut();
 carousel_wall_struts_outer();
 // carousel_wall_struts_inner();
 
-// TODO - address the door frame split of struts
+// TODO - address the door frame splitting the beam struts

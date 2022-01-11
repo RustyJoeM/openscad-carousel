@@ -9,7 +9,7 @@ COLUMN_HEIGHT = FF * FY - 0.0 * BEAM_SIZE;
 
 STRUT_OVERRUN = 0.2 * FACE_THICKNESS;
 
-module door_shape(width, height, thickness, ground_bleed = 0) {
+module door_shape(width = FACE_DOOR_WIDTH, height = FACE_DOOR_HEIGHT, thickness = FACE_THICKNESS + 2 * STRUT_OVERRUN, ground_bleed = 0) {
     radius = width/2;
     straight_height = height - radius;
 

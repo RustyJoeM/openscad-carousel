@@ -4,7 +4,7 @@ use <wall-column.scad>;
 use <wall-struts-pegs.scad>;
 use <wall-roof.scad>;
 
-module carousel_wall_core_shape() {
+module wall_core_shape() {
     _face_xy_points = [
         [FX, 0],
         [FX, FY * FF],
@@ -16,20 +16,23 @@ module carousel_wall_core_shape() {
     polygon(_face_xy_points);
 }
 
-module carousel_wall_core() {
-    color(COLOR_WALL)
+module wall_core_trimmed_door() {
     difference() {
-        // main mass/wall
-        carousel_wall_core_shape();
-        // door hole
+        wall_core_shape();
         door_shape(width = FACE_DOOR_WIDTH, height = FACE_DOOR_HEIGHT, thickness = (FACE_THICKNESS + BLEED), ground_bleed = 2 * BLEED);
+    }
+}
+
+module wall_core_trimmed() {
+    difference() {
+        wall_core_trimmed_door();
         // strut joint holes
         for (p = peg_points()) {
             translate([p.x, p.y, -FACE_THICKNESS/2 - 0.5*BLEED])
             strut_peg(FACE_THICKNESS + BLEED, diam_ease = EASE);
         }
         // side columns
-        columns_side_holes();
+        column_side_holes();
         // roof connectors
         translate([0, FY * FF, 0]) {
             translate([+FX/2, 0, 0])
@@ -43,4 +46,17 @@ module carousel_wall_core() {
     }
 }
 
+module carousel_wall_core() {
+    color(COLOR_WALL)
+    translate([0, 0, 0.5 * FACE_THICKNESS])
+    wall_core_trimmed();
+}
+
+module mounted_wall_core() {
+    color(COLOR_WALL)
+    rotate([90, 0, 0])
+    wall_core_trimmed();
+}
+
+// mounted_wall_core();
 carousel_wall_core();

@@ -3,18 +3,19 @@ include <wall-commons.scad>;
 
 _COLUMN_DIAM = BEAM_SIZE + 2 * STRUT_OVERRUN;
 
-module carousel_wall_column(diam_bleed = 0, ground_bleed = 0, height = COLUMN_HEIGHT) {
+module mounted_column(diam_bleed = 0, ground_bleed = 0, height = COLUMN_HEIGHT) {
     color(COLOR_STRUTS)
-    rotate([-90, 0, 0])
     translate([0, 0, -ground_bleed])
         cylinder(h = height + ground_bleed, d = _COLUMN_DIAM + diam_bleed);
 }
 
-module columns_side_holes() {
-    translate([-FX, 0, 0])
-        carousel_wall_column(diam_bleed = EASE, ground_bleed = BLEED, height = 2 * COLUMN_HEIGHT);
-    translate([FX, 0, 0])
-        carousel_wall_column(diam_bleed = EASE, ground_bleed = BLEED, height = 2 * COLUMN_HEIGHT);
+module column_side_holes() {
+    rotate([-90, 0, 0]) {
+        translate([-FX, 0, 0])
+        mounted_column(diam_bleed = EASE, ground_bleed = BLEED, height = 2 * COLUMN_HEIGHT);
+        translate([FX, 0, 0])
+        mounted_column(diam_bleed = EASE, ground_bleed = BLEED, height = 2 * COLUMN_HEIGHT);
+    }
 }
 
 JOINT_DIMENSIONS = [0.25 * _COLUMN_DIAM, 0.75 * _COLUMN_DIAM, 0.25 * _COLUMN_DIAM];
@@ -28,7 +29,8 @@ module carousel_wall_column_half() {
 
     color(COLOR_STRUTS)
     difference() {
-        carousel_wall_column();
+        rotate([-90, 0, 0])
+        mounted_column();
         // remove bottom half of column
         translate([0,  cutoff_length/2 - BLEED/2, -cuttof_height/2])
             cube([cutoff_width, cutoff_length, cuttof_height], center = true);
@@ -50,4 +52,6 @@ module carousel_wall_column_peg() {
     cube([x, y, z], center = true);
 }
 
+// mounted_column();
+// column_side_holes();
 carousel_wall_column_half();

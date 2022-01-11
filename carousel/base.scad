@@ -1,24 +1,43 @@
 include <carousel-config.scad>;
 use <commons.scad>;
 
+use <wall-column.scad>;
+use <wall-core.scad>;
+use <wall-struts.scad>;
+
 BASE_RADIUS = 1.05 * CAROUSEL_ESCRIBED_RADIUS; // to include/cover carousel walls
 
-module _bearing_socket() {
+NESTING_DEPTH = 0.5 * BASE_FLOOR_THICKNESS;
+// TODO nesting depth not accounted for in total height of carousel!
+
+module base_board() {
     difference() {
-        // socket body
-        cylinder(h = BEARING_SHELL_THICKNESS + BEARING_HEIGHT, r = 0.5 * BEARING_OUTER_D + EASE + BEARING_SHELL_THICKNESS, $fn = CYL_FN);
-        // bearing slot
-        translate([0, 0, BEARING_SHELL_THICKNESS])
-        cylinder(h = BEARING_HEIGHT + EASE, d = BEARING_OUTER_D + EASE, $fn = CYL_FN);
+        // floor plate
+        translate([0, 0, -BASE_FLOOR_THICKNESS])
+        cylinder(h = BASE_FLOOR_THICKNESS, r = BASE_RADIUS);
+        // cutoff nesting of walls/columns
+        for (i = [0 : CAROUSEL_FACE_COUNT]){
+            rotate(i * 360/CAROUSEL_FACE_COUNT, [0, 0, 1])
+            translate([0, -FACE_APOTHEM_LEN, 0]) {
+                translate([-FACE_WIDTH/2, 0, -NESTING_DEPTH])
+                mounted_column();
+
+                translate([0, 0, -NESTING_DEPTH])
+                rotate([90, 0, 0]) {
+                    wall_core_trimmed_door();
+                    carousel_door_strut(z_centered = true, ease = 0);
+                }
+            }
+        }
     }
 }
 
-module carousel_base() {
+module upside_down_base_shape() {
     color(COLOR_BASE)
     difference() {
         union() {
-            // floor plate
-            cylinder(h = BASE_FLOOR_THICKNESS, r = BASE_RADIUS);
+            rotate([180, 0, 0])
+            base_board();
             // rim/side wall
             edge_height = BASE_TOTAL_HEIGHT - BASE_FLOOR_THICKNESS + BLEED;
             translate([0, 0, BASE_FLOOR_THICKNESS - BLEED])
@@ -27,22 +46,29 @@ module carousel_base() {
                 translate([0, 0, -0.5 * BLEED])
                 cylinder(h = edge_height + BLEED, r = BASE_RADIUS - BASE_WALL_THICKNESS);
             }
-            // bearing socket
-            assert(BASE_FLOOR_THICKNESS + BEARING_HEIGHT < BASE_TOTAL_HEIGHT, "Bearing height is too big to fit into raised base");
-            translate([0, 0, BASE_FLOOR_THICKNESS])
-            _bearing_socket();
         }
         translate([0, 0, -0.5 * BLEED])
         cylinder(h = BASE_TOTAL_HEIGHT + BLEED, r = AXLE_RADIUS + EASE, $fn = CYL_FN);
     }
 }
 
-module base_part(n = CAROUSEL_FACE_COUNT) {
+module carousel_base() {
+    upside_down_base_shape();
+}
+
+module mounted_base() {
+    rotate([180, 0, 0])
+    upside_down_base_shape();
+}
+
+module carouse_base_segment(n = CAROUSEL_FACE_COUNT) {
+    angle_offset = 360/CAROUSEL_FACE_COUNT/2;
     xx = 2 * (BASE_RADIUS + EASE);
     yy = BASE_RADIUS + 2 * EASE;
     zz = 2 * (BASE_TOTAL_HEIGHT + EASE);
     difference() {
-        carousel_base();
+        rotate([0, 0, angle_offset])
+            carousel_base();
         translate([0, -0.5*yy, 0])
             cube([xx, yy, zz], center = true);
         rotate(360/n)
@@ -51,4 +77,5 @@ module base_part(n = CAROUSEL_FACE_COUNT) {
     }
 }
 
+// carouse_base_segment();
 carousel_base();
