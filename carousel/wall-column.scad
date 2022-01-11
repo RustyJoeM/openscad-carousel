@@ -20,7 +20,7 @@ module column_side_holes() {
 
 JOINT_DIMENSIONS = [0.25 * _COLUMN_DIAM, 0.75 * _COLUMN_DIAM, 0.25 * _COLUMN_DIAM];
 
-module carousel_wall_column_half() {
+module printable_column_half() {
     joint_y_pos = [0.05, 0.35, 0.65, 0.95];
 
     cutoff_width = _COLUMN_DIAM + BLEED;
@@ -42,7 +42,7 @@ module carousel_wall_column_half() {
     }
 }
 
-module carousel_wall_column_peg() {
+module printable_column_peg() {
     x = 2 * JOINT_DIMENSIONS.z;
     y = JOINT_DIMENSIONS.y;
     z = JOINT_DIMENSIONS.x;
@@ -54,4 +54,4 @@ module carousel_wall_column_peg() {
 
 // mounted_column();
 // column_side_holes();
-carousel_wall_column_half();
+printable_column_half();

@@ -6,7 +6,7 @@ use <wall-column.scad>;
 use <wall-core.scad>;
 use <wall-struts-pegs.scad>;
 
-module carousel_door_strut(z_centered = false, ease = EASE) {
+module printable_door_strut(z_centered = false, ease = EASE) {
     door_strut_thickness = FACE_THICKNESS + 2 * STRUT_OVERRUN;
     dz = (z_centered == true) ? 0 : 0.5*door_strut_thickness;
 
@@ -71,7 +71,7 @@ module _cut_struts() {
     }
 }
 
-module carousel_wall_struts_outer() {
+module printable_wall_struts_outer() {
     difference() {
         _cut_struts();
         // cut off side columns
@@ -81,7 +81,7 @@ module carousel_wall_struts_outer() {
 }
 
 // inside part of carousel wall - has shorter strut on sides to fit (not overlap segments) near column
-module carousel_wall_struts_inner() {
+module printable_wall_struts_inner() {
     // TODO - this should be unified with all the wall mounting chaos in some common fn?
     dy = -FACE_APOTHEM_LEN + (FACE_THICKNESS/2 + STRUT_OVERRUN + EASE);
     rotate([-90, 0, 0])
@@ -103,8 +103,8 @@ module carousel_wall_struts_inner() {
     }
 }
 
-carousel_door_strut();
-carousel_wall_struts_outer();
-// carousel_wall_struts_inner();
+printable_door_strut();
+// printable_wall_struts_outer();
+// printable_wall_struts_inner();
 
 // TODO - address the door frame splitting the beam struts

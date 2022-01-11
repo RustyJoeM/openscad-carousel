@@ -25,7 +25,7 @@ module base_board() {
                 translate([0, 0, -NESTING_DEPTH])
                 rotate([90, 0, 0]) {
                     wall_core_trimmed_door();
-                    carousel_door_strut(z_centered = true, ease = 0);
+                    printable_door_strut(z_centered = true, ease = 0);
                 }
             }
         }
@@ -52,7 +52,7 @@ module upside_down_base_shape() {
     }
 }
 
-module carousel_base() {
+module printable_base() {
     upside_down_base_shape();
 }
 
@@ -61,14 +61,15 @@ module mounted_base() {
     upside_down_base_shape();
 }
 
-module carouse_base_segment(n = CAROUSEL_FACE_COUNT) {
+module printable_base_segment(n = CAROUSEL_FACE_COUNT) {
     angle_offset = 360/CAROUSEL_FACE_COUNT/2;
     xx = 2 * (BASE_RADIUS + EASE);
     yy = BASE_RADIUS + 2 * EASE;
     zz = 2 * (BASE_TOTAL_HEIGHT + EASE);
+    color(COLOR_BASE)
     difference() {
         rotate([0, 0, angle_offset])
-            carousel_base();
+            printable_base();
         translate([0, -0.5*yy, 0])
             cube([xx, yy, zz], center = true);
         rotate(360/n)
@@ -77,5 +78,5 @@ module carouse_base_segment(n = CAROUSEL_FACE_COUNT) {
     }
 }
 
-// carouse_base_segment();
-carousel_base();
+// printable_base_segment();
+printable_base();

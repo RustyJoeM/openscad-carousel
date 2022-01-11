@@ -46,7 +46,7 @@ module wall_core_trimmed() {
     }
 }
 
-module carousel_wall_core() {
+module printable_wall_core() {
     color(COLOR_WALL)
     translate([0, 0, 0.5 * FACE_THICKNESS])
     wall_core_trimmed();
@@ -59,4 +59,4 @@ module mounted_wall_core() {
 }
 
 // mounted_wall_core();
-carousel_wall_core();
+printable_wall_core();

@@ -122,7 +122,7 @@ module trimmed_roof() {
     }
 }
 
-module carousel_roof_segment() {
+module printable_roof_segment() {
     translate([0, 0, 0.5 * ROOF_THICKNESS])
     rotate([-alpha, 0, 0])
     trimmed_roof();
@@ -135,4 +135,4 @@ module carousel_roof_mounted() {
 
 // carousel_roof_mounted();
 // roof_connector_joint();
-carousel_roof_segment();
+printable_roof_segment();
