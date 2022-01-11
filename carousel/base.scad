@@ -1,4 +1,4 @@
-include <carousel-config.scad>;
+include <config.scad>;
 use <commons.scad>;
 
 use <wall-column.scad>;

@@ -1,4 +1,4 @@
-include <carousel-config.scad>;
+include <config.scad>;
 use <commons.scad>;
 
 include <wall-commons.scad>;
@@ -10,17 +10,17 @@ use <wall-roof.scad>;
 module mounted_wall() {
     rotate([90, 0, 0]) {
         wall_core_trimmed();
-        carousel_door_strut(z_centered = true);
+        printable_door_strut(z_centered = true);
 
         // for mounting struts on core
         STRUT_DZ = FACE_THICKNESS/2 + STRUT_OVERRUN + EASE;
 
         translate([0, 0, -STRUT_DZ])
-        carousel_wall_struts_inner();
+        printable_wall_struts_inner();
 
         translate([0, 0, STRUT_DZ])
         rotate([0, 180, 0])
-        carousel_wall_struts_outer();
+        printable_wall_struts_outer();
     }
 
     carousel_roof_mounted();

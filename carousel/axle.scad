@@ -1,4 +1,4 @@
-include <carousel-config.scad>;
+include <config.scad>;
 
 arm_height = 2 * AXLE_RADIUS;
 axle_height = ROOF_HEIGHT + BASE_TOTAL_HEIGHT - EASE;

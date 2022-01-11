@@ -1,4 +1,4 @@
-include <carousel-config.scad>;
+include <config.scad>;
 
 // Auxiliary module to position child nodes into specific carousel seat slot.
 //     ring_index - which ring of seats to mount to, innermost (0) to outermost

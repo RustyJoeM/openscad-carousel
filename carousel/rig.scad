@@ -1,4 +1,4 @@
-include <carousel-config.scad>;
+include <config.scad>;
 use <commons.scad>;
 
 // Top rotating part used to attach the carousel seats.

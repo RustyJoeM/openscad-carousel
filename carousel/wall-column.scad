@@ -1,4 +1,4 @@
-include <carousel-config.scad>;
+include <config.scad>;
 include <wall-commons.scad>;
 
 _COLUMN_DIAM = BEAM_SIZE + 2 * STRUT_OVERRUN;

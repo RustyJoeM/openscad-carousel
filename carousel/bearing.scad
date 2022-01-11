@@ -1,4 +1,4 @@
-include <carousel-config.scad>;
+include <config.scad>;
 use <commons.scad>;
 
 module _bearing_socket() {

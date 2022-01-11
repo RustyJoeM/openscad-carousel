@@ -1,4 +1,4 @@
-include <carousel-config.scad>;
+include <config.scad>;
 
 FX = FACE_WIDTH/2;
 FY = FACE_HEIGHT;
