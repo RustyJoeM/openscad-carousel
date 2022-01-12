@@ -40,7 +40,7 @@ alpha = atan((max_z - canopy_height) / ey);
 
 module roof_connector_joint(is_hole_mode = false) {
 
-    max_z = ROOF_HEIGHT/2;
+    max_z = canopy_height;
 
     width = FX/5 + (is_hole_mode ? EASE : 0);
     thickness = 0.5 * FACE_THICKNESS + (is_hole_mode ? EASE : 0);
@@ -93,7 +93,7 @@ module roof_shape() {
         translate([0, 0, 0.5 * ROOF_THICKNESS])
         rect_prism(edge_width, 1.5 * ROOF_THICKNESS, key_points[4], key_points[7]);
 
-        // TODO - cut off and make stadanlone connector
+        // TODO - cut off and make standalone connector
         translate([0, 0, 1.0 * ROOF_THICKNESS])
         rect_prism(edge_width, 1.5 * ROOF_THICKNESS, key_points[0], key_points[1]);
 
