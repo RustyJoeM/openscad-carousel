@@ -8,9 +8,15 @@ Intent is to have a core model for 3D printing, that allows to add any custom se
 
 It should be easy to customize resulting model (e.g. total size, height, number of walls/faces of the carousel N-gon, etc.) using the "configuration" constants in the script code.
 
+# work in progress preview
+
+![carousel-wip-preview](carousel-wip-preview.png)
+
 # Customizing model
 
 You can use file [carousel/config.scad](carousel/config.scad) to modify some features of the carousel, like total dimensions, number of walls making the whole N-gon shell, etc. See file contents and comments for details.
+
+There are lot of relationships and constraints between various parts of carousel. When changing config to your needs, you may observe some parts breaking apart or not interconnecting properly. Despite math in the model being not that complex, i may have missed (and most probably did on several occasions)  correct bindings due to whole scope of model. In case the carousel breaks for your required config, you can let me know...
 
 # 3D printing
 
