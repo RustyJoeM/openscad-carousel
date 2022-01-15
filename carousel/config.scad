@@ -26,6 +26,9 @@ BASE_WALL_THICKNESS = 4;
 // Face, or, a wall of the carousel "shell".
 FACE_HEIGHT = 150;
 FACE_THICKNESS = 5;
+// size of wall struts/doorframe
+BEAM_SIZE = 1.1 * FACE_THICKNESS;
+
 // ---- derived
 FACE_WIDTH = CAROUSEL_ESCRIBED_RADIUS * 2 * sin(180/CAROUSEL_FACE_COUNT);
 FACE_ANGLE = (1 - 2/CAROUSEL_FACE_COUNT)*180;
@@ -57,7 +60,7 @@ RIG_STR = 6;
 
 // Abstract "rings" carrying seats, and their distance off the carousel center
 // as a fraction of radius.
-RIG_RING_POSITIONS = [0.3, 0.6, 0.9];
+RIG_RING_POSITIONS = [0.4, 0.8];
 RIG_MAX_R = 0.90 * CAROUSEL_INSCRIBED_RADIUS;
 
 COLOR_WALL = "BurlyWood";

@@ -5,10 +5,13 @@ use <wall-column.scad>;
 use <wall-core.scad>;
 use <wall-struts.scad>;
 
+// TODO - recompute so that BASE_RADIUS dictates 3d printer bed size explicitly
 BASE_RADIUS = 1.05 * CAROUSEL_ESCRIBED_RADIUS; // to include/cover carousel walls
 
 NESTING_DEPTH = 0.5 * BASE_FLOOR_THICKNESS;
 // TODO nesting depth not accounted for in total height of carousel!
+
+function base_tenon_radius() = 3 * AXLE_RADIUS;
 
 module base_board() {
     difference() {
@@ -38,17 +41,24 @@ module upside_down_base_shape() {
         union() {
             rotate([180, 0, 0])
             base_board();
-            // rim/side wall
             edge_height = BASE_TOTAL_HEIGHT - BASE_FLOOR_THICKNESS + BLEED;
-            translate([0, 0, BASE_FLOOR_THICKNESS - BLEED])
-            difference() {
-                cylinder(h = edge_height, r = BASE_RADIUS);
-                translate([0, 0, -0.5 * BLEED])
-                cylinder(h = edge_height + BLEED, r = BASE_RADIUS - BASE_WALL_THICKNESS);
+            translate([0, 0, BASE_FLOOR_THICKNESS - BLEED]) {
+                // outer rim/side wall
+                difference() {
+                    cylinder(h = edge_height, r = BASE_RADIUS);
+                    translate([0, 0, -0.5 * BLEED])
+                    cylinder(h = edge_height + BLEED, r = BASE_RADIUS - BASE_WALL_THICKNESS);
+                }
+                // inner rim/side wall
+                difference() {
+                    cylinder(h = edge_height, r = base_tenon_radius() + BASE_WALL_THICKNESS + EASE);
+                    translate([0, 0, -0.5 * BLEED])
+                    cylinder(h = edge_height + BLEED, r = base_tenon_radius() + EASE);
+                }
             }
         }
         translate([0, 0, -0.5 * BLEED])
-        cylinder(h = BASE_TOTAL_HEIGHT + BLEED, r = AXLE_RADIUS + EASE, $fn = CYL_FN);
+        cylinder(h = BASE_TOTAL_HEIGHT + BLEED, r = AXLE_RADIUS + EASE);
     }
 }
 
@@ -79,4 +89,6 @@ module printable_base_segment(n = CAROUSEL_FACE_COUNT) {
 }
 
 // printable_base_segment();
-printable_base();
+// printable_base();
+
+mounted_base();

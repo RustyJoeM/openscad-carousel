@@ -7,7 +7,7 @@ use <wall-column.scad>;
 use <wall-struts.scad>;
 use <wall-roof.scad>;
 
-module mounted_wall() {
+module mounted_wall(roof_elevated = false) {
     rotate([90, 0, 0]) {
         wall_core_trimmed();
         printable_door_strut(z_centered = true);
@@ -23,14 +23,17 @@ module mounted_wall() {
         printable_wall_struts_outer();
     }
 
+    dz = roof_elevated ? FACE_HEIGHT/2 : 0;
+
+    translate([0, 0, dz])
     carousel_roof_mounted();
 }
 
-module mounted_walls() {
+module mounted_walls(roof_elevated = false) {
     for (i = [0 : CAROUSEL_FACE_COUNT]) {
         rotate(i * 360/CAROUSEL_FACE_COUNT, [0, 0, 1])
         translate([0, -FACE_APOTHEM_LEN, 0]) {
-            mounted_wall();
+            mounted_wall(roof_elevated);
             translate([-FACE_WIDTH/2, 0, 0])
             mounted_column();
         }

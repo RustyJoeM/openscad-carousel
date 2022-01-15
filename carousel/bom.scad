@@ -3,6 +3,11 @@ use <wall-struts.scad>;
 use <wall-column.scad>;
 use <wall-roof.scad>;
 use <base.scad>;
+use <axle.scad>;
+
+// raise $fn before generating model parts for smoother rounded surfaces, columns, etc.
+// our ideal number may vary - higher number may cause OpenSCAD to take longer to generate a model) as the first line of the bom script
+$fn = 64;
 
 // ----------------------------------------------------------------
     // let's assume that X = CAROUSEL_FACE_COUNT (see config.scad)
@@ -35,3 +40,13 @@ use <base.scad>;
     // or bigger N-th pieces, where N can be arbitrarily chosen from the interval of 1..X
 
 // printable_base_segment(n = N);  // N
+
+// printable_axle_bearing();   // 1
+
+    // next item needs only ONE variant to be printed, either all-in-one piece:
+
+// printable_axle_base(); // 1
+
+    // OR axle core separated into twwo halves and joining pegs
+
+// printable_axle_bom(); // 1

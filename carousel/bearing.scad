@@ -14,7 +14,7 @@ module _bearing_socket(bearing_height, shell_height) {
 module bearing_top_hole() {
     cylinder(h = BEARING_HEIGHT_TOP + EASE, d = BEARING_DIAM_OUTER + EASE);
     translate([0, 0, BEARING_HEIGHT_TOP - BLEED])
-    cylinder(h = BEARING_PEG_OVERRUN + BLEED, d = BEARING_DIAM_INNER + EASE);
+    cylinder(h = BEARING_PEG_OVERRUN + BLEED + 2 * EASE, d = BEARING_DIAM_INNER + 2 * EASE);
 }
 
 module bearing_bottom() {
@@ -34,6 +34,12 @@ module bearing_top() {
     }
 }
 
-dx = BEARING_DIAM_OUTER/2 + BEARING_SHELL_THICKNESS + 10*EASE;
-translate([-dx, 0, 0]) bearing_bottom();
-translate([+dx, 0, 0]) bearing_top();
+// module printable_bearing_bom() {
+//     color(COLOR_AXLE) {
+//         dx = BEARING_DIAM_OUTER/2 + BEARING_SHELL_THICKNESS + 10*EASE;
+//         translate([-dx, 0, 0]) bearing_bottom();
+//         translate([+dx, 0, 0]) bearing_top();
+//     }
+// }
+
+// printable_bearing_bom();

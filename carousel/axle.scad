@@ -1,85 +1,103 @@
 include <config.scad>;
 
-arm_height = 2 * AXLE_RADIUS;
-axle_height = ROOF_HEIGHT + BASE_TOTAL_HEIGHT - EASE;
+use <bearing.scad>;
+use <base.scad>;
 
-module carousel_axle_arms() {
-    arm_length = 8 * AXLE_RADIUS;
-    arm_width = AXLE_RADIUS;
+AXLE_TENON_THICKNESS = BASE_FLOOR_THICKNESS;
 
-    color(COLOR_AXLE) {
-        difference() {
-            union() {
-                cylinder(h = arm_height, r = 2 * AXLE_RADIUS);
-                for (i = [0 : CAROUSEL_FACE_COUNT/2]){
-                    rotate(2 * i * 360/CAROUSEL_FACE_COUNT, [0, 0, 1])
-                    translate([0, -arm_width/2, 0])
-                    cube([arm_length, arm_width, arm_height]);
-                }
-            }
-            translate([0, 0, -BLEED/2])
-                cylinder(h = arm_height + BLEED, r = AXLE_RADIUS + EASE);
-        }
+AXLE_HEIGHT_TOTAL = FACE_DOOR_HEIGHT + BEAM_SIZE;   // ground level to bearing socket top (not including bearing peg)
+AXLE_HEIGHT_BASE_ABOVE = AXLE_HEIGHT_TOTAL - (BEARING_HEIGHT_BOTTOM + BEARING_SHELL_BOTTOM);  // ground level to axle peg
+AXLE_HEIGHT_BASE_BELOW = AXLE_TENON_THICKNESS + BASE_FLOOR_THICKNESS; // below ground level height -> tenon + ground floor thickness
+
+AXLE_PEG_RAD = 0.5 * AXLE_RADIUS;
+AXLE_PEG_HEIGHT = BEARING_HEIGHT_BOTTOM + BEARING_SHELL_BOTTOM;
+
+tenon = base_tenon_radius();
+
+module printable_axle_base() {
+    height = AXLE_HEIGHT_BASE_BELOW + AXLE_HEIGHT_BASE_ABOVE;
+
+    color(COLOR_STRUTS) {
+        cylinder(h = height, r = AXLE_RADIUS);
+
+        translate([0, 0, height - BLEED])
+        cylinder(h = AXLE_PEG_HEIGHT + BLEED, r = AXLE_PEG_RAD);
+
+        cylinder(h = AXLE_TENON_THICKNESS, r = tenon);
     }
 }
 
-module carousel_axle() {
-    color(COLOR_AXLE) {
-        cylinder(h = axle_height, r = AXLE_RADIUS);
-        translate([0, 0, axle_height - 3 * arm_height])
-            cylinder(h = 2 * AXLE_RADIUS, r1 = AXLE_RADIUS, r2 = 2 * AXLE_RADIUS);
-    }
-}
-
-// just for presentation, for 3D print the separate parts are better...
-module carousel_axle_all_in_one() {
-    carousel_axle();
-    translate([0, 0, axle_height - 2 * arm_height])
-    carousel_axle_arms();
-}
-
-PEG_SIZE = [0.5 * AXLE_RADIUS, 0.5 * AXLE_RADIUS, 1.5 * AXLE_RADIUS];
-
-module carousel_axle_half() {
-    peg_heights = [0.05, 0.35, 0.65, 0.95];
-
-    translate([-axle_height/2, 0, 0])
-    rotate([0, 90, 0])
+module printable_axle_bearing() {
+    color(COLOR_AXLE)
     difference() {
-        carousel_axle();
-        translate([0, -5 * AXLE_RADIUS, -BLEED/2])
-            cube([10 * AXLE_RADIUS, 10 * AXLE_RADIUS, axle_height + BLEED]);
+        bearing_bottom();
+        translate([0, 0, -BLEED])
+        cylinder(h = AXLE_PEG_HEIGHT + BLEED + EASE, r = AXLE_PEG_RAD + EASE);
+    }
+}
+
+module mounted_axle(with_bearing = true) {
+    translate([0, 0, -AXLE_HEIGHT_BASE_BELOW])
+    printable_axle_base();
+
+    if (with_bearing) {
+        translate([0, 0, AXLE_HEIGHT_BASE_ABOVE])
+        printable_axle_bearing();
+    }
+}
+
+AXLE_BODY_PEG_SIZE = [0.5 * AXLE_RADIUS, 0.5 * AXLE_RADIUS, 1.5 * AXLE_RADIUS];
+
+module axle_body_half() {
+    peg_heights = [0.05, 0.45, 0.85];
+
+    peg = AXLE_BODY_PEG_SIZE;
+
+    translate([-(AXLE_HEIGHT_BASE_BELOW + AXLE_HEIGHT_BASE_ABOVE + peg.z)/2, 0, 0])
+    rotate([0, 90, 0])
+    color(COLOR_AXLE)
+    difference() {
+        printable_axle_base();
+        translate([0, -tenon - BLEED/2, -BLEED/2])
+        cube([tenon + BLEED, 2 * (tenon + BLEED), AXLE_HEIGHT_BASE_BELOW + AXLE_HEIGHT_BASE_ABOVE + peg.z + BLEED]);
         for (fz = peg_heights) {
-            translate([-PEG_SIZE.x, -PEG_SIZE.y/2, fz * axle_height])
-                cube([PEG_SIZE.x + EASE, PEG_SIZE.y + EASE, PEG_SIZE.z + EASE]);
+            translate([-peg.x, -peg.y/2, fz * (AXLE_HEIGHT_BASE_BELOW + AXLE_HEIGHT_BASE_ABOVE)])
+            cube([peg.x + EASE, peg.y + EASE, peg.z + EASE]);
         }
     }
 }
 
-module carousel_axle_peg() {
-    //translate([0, 0, PEG_SIZE.x/2])
-    x = PEG_SIZE.z;
-    y = PEG_SIZE.y * 2;
-    z = PEG_SIZE.x;
+module axle_peg() {
+    peg = AXLE_BODY_PEG_SIZE;
+    x = peg.z;
+    y = peg.y * 2;
+    z = peg.x;
 
     color(COLOR_AXLE)
     cube([x, y, z], center = true);
 }
 
-module carousel_axle_bom() {
-    dy = 3 * AXLE_RADIUS;
+module printable_axle_bom() {
+    dy = tenon;
 
     translate([0, dy, 0])
-    carousel_axle_half();
+    axle_body_half();
 
     translate([0, -dy, 0])
     rotate([0, 0, 180])
-        carousel_axle_half();
+    axle_body_half();
 
-    for (i = [0:3]) {
-        translate([2 * i * PEG_SIZE.z, 0, PEG_SIZE.x/2])
-        carousel_axle_peg();
+
+    peg = AXLE_BODY_PEG_SIZE;
+    dx = peg.x;
+    translate([0, 0, peg.x/2]) {
+        translate([-5 * dx, 0, 0]) axle_peg();
+        translate([0, 0, 0]) axle_peg();
+        translate([+5 * dx, 0, 0]) axle_peg();
     }
 }
 
-carousel_axle_bom();
+// printable_axle_bearing();
+// printable_axle_base();
+printable_axle_bom();
+

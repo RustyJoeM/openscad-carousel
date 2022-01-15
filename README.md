@@ -22,6 +22,8 @@ There are lot of relationships and constraints between various parts of carousel
 
 See [carousel/bom.scad](carousel/bom.scad) file for details on how many pieces and which modules need to be printed.
 
+Don't forget to raise `$fn` variable (line at the beginning of the bom script) before generating any model parts - for smoother rounded surfaces, columns, etc. Your ideal number may vary - higher number may cause OpenSCAD to take longer to generate a model.
+
 # Mounting example
 
 See [mounting-example.scad](mounting-example.scad) file for a simple example on how to easily attach own module/object into carousel for testing/visualization purposes.
@@ -30,5 +32,4 @@ See [mounting-example.scad](mounting-example.scad) file for a simple example on 
 
 - decide on where to fixate the rotating bearing
 - fix rig
-- fix axle
 - finalize, humanize, clean-up the all modules

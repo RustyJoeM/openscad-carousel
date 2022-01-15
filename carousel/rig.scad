@@ -1,17 +1,14 @@
 include <config.scad>;
 use <commons.scad>;
 
+use <bearing.scad>;
+
 // Top rotating part used to attach the carousel seats.
 module carousel_rig() {
     inner_sin = sin(360/CAROUSEL_FACE_COUNT/2);
 
     color(COLOR_AXLE) {
-        // core ring
-        difference() {
-            cylinder(h = RIG_HEIGHT, r = 0.1 * RIG_MAX_R);
-            translate([0, 0, -0.5 * BLEED])
-            cylinder(h = RIG_HEIGHT + BLEED, r = AXLE_RADIUS + EASE);
-        }
+        bearing_top();
         // outer ring
         difference() {
             cylinder(h = RIG_HEIGHT, r = RIG_MAX_R);
@@ -23,7 +20,7 @@ module carousel_rig() {
         for (i = [0 : CAROUSEL_FACE_COUNT]){
             rotate(i * 360/CAROUSEL_FACE_COUNT, [0, 0, 1]) {
                 // star-beam
-                square_prism(RIG_STR, [0.05 * RIG_MAX_R, 0, dz], [RIG_MAX_R, 0, dz]);
+                square_prism(RIG_STR, [BEARING_DIAM_OUTER/2, 0, dz], [RIG_MAX_R, 0, dz]);
                 // cross-beams
                 for (frac = RIG_RING_POSITIONS) {
                     ring_r = frac * RIG_MAX_R;
