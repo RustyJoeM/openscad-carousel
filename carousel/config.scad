@@ -58,6 +58,9 @@ AXLE_RADIUS = 1.5 * FACE_THICKNESS;
 RIG_HEIGHT = 6;
 RIG_STR = 6;
 
+RIG_NUT_SIZE = 10;  // 4 for M4 nut, 10 for M10 nut, etc.
+RIG_NUT_WALL = 3;   // thickness of the wall around hole to carry nut
+
 // Abstract "rings" carrying seats, and their distance off the carousel center
 // as a fraction of radius.
 RIG_RING_POSITIONS = [0.4, 0.8];

@@ -34,6 +34,8 @@ module bearing_top() {
     }
 }
 
+function mounted_bearing_height() = BEARING_HEIGHT_BOTTOM + BEARING_HEIGHT_TOP + BEARING_SHELL_THICKNESS + BEARING_SHELL_BOTTOM;
+
 // module printable_bearing_bom() {
 //     color(COLOR_AXLE) {
 //         dx = BEARING_DIAM_OUTER/2 + BEARING_SHELL_THICKNESS + 10*EASE;

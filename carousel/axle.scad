@@ -14,6 +14,8 @@ AXLE_PEG_HEIGHT = BEARING_HEIGHT_BOTTOM + BEARING_SHELL_BOTTOM;
 
 tenon = base_tenon_radius();
 
+function axle_ground_height_pegless() = (AXLE_HEIGHT_BASE_ABOVE);
+
 module printable_axle_base() {
     height = AXLE_HEIGHT_BASE_BELOW + AXLE_HEIGHT_BASE_ABOVE;
 
@@ -101,3 +103,23 @@ module printable_axle_bom() {
 // printable_axle_base();
 printable_axle_bom();
 
+// module axle_arms() {
+//     arm_height = 2 * AXLE_RADIUS;
+//     arm_length = 8 * AXLE_RADIUS;
+//     arm_width = AXLE_RADIUS;
+
+//     color(COLOR_AXLE) {
+//         difference() {
+//             union() {
+//                 cylinder(h = arm_height, r = 2 * AXLE_RADIUS);
+//                 for (i = [0 : CAROUSEL_FACE_COUNT/2]){
+//                     rotate(2 * i * 360/CAROUSEL_FACE_COUNT, [0, 0, 1])
+//                     translate([0, -arm_width/2, 0])
+//                     cube([arm_length, arm_width, arm_height]);
+//                 }
+//             }
+//             translate([0, 0, -BLEED/2])
+//                 cylinder(h = arm_height + BLEED, r = AXLE_RADIUS + EASE);
+//         }
+//     }
+// }

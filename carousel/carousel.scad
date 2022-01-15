@@ -13,8 +13,7 @@ module carousel_mounted() {
     translate([0, 0, -EASE])
     mounted_walls(true);
 
-    // translate([0, 0, 1.2 * FACE_DOOR_HEIGHT])
-    // carousel_rig();
+    mounted_rig();
 }
 
 // all-in-one model, possibly not easily printable as a whole
