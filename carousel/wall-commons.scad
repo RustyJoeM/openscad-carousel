@@ -3,7 +3,7 @@ use <commons.scad>;
 
 FX = FACE_WIDTH/2;
 FY = FACE_HEIGHT;
-FF = 0.85;
+FF = FACE_HEIGHT_ROOF_START_RATIO;
 
 COLUMN_HEIGHT = FF * FY - 0.0 * BEAM_SIZE;
 

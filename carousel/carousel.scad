@@ -11,13 +11,11 @@ module carousel_mounted() {
     mounted_axle();
 
     translate([0, 0, -EASE])
-    mounted_walls(true);
+    mounted_walls(roof_elevated = false);
 
     mounted_rig();
+    mounted_rotator();
 }
 
 // all-in-one model, possibly not easily printable as a whole
 carousel_mounted();
-
-// carousel_base();
-// carousel_rig();

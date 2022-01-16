@@ -5,11 +5,19 @@ use <bearing.scad>;
 use <nut.scad>;
 use <axle.scad>;
 
+RIG_CAP_BLEED_HEIGHT = 2;
+RIG_CAP_BLEED_DIAM = BEARING_DIAM_INNER;
+
 module rig_shape() {
     inner_sin = sin(360/CAROUSEL_FACE_COUNT/2);
 
     color(COLOR_AXLE) {
-        bearing_top();
+        // cut out nest for top arm rotator
+        difference() {
+            bearing_top();
+            translate([0, 0, -BLEED])
+            cylinder(h = RIG_CAP_BLEED_HEIGHT + BLEED, d = RIG_CAP_BLEED_DIAM + EASE);
+        }
         // outer ring
         difference() {
             cylinder(h = RIG_HEIGHT, r = RIG_MAX_R);
@@ -63,13 +71,63 @@ module printable_rig() {
 }
 
 module mounted_rig() {
-    dz = axle_ground_height_pegless() + mounted_bearing_height() + RIG_HEIGHT + EASE;
+    dz = axle_ground_height_pegless() + bearing_height_total();
     translate([0, 0, dz])
     rotate([180, 0, 0])
     printable_rig();
 }
 
-// mounted_rig();
-printable_rig();
+module printable_arm_head(diam = RIG_STR, cap_width_multiplier = 2) {
+    arm_height = RIG_STR;
+    arm_length = 6 * AXLE_RADIUS;
+    arm_width = AXLE_RADIUS;
 
-// TODO - nut caps to keep nuts covered?
+    color(COLOR_BASE) {
+        difference() {
+            union() {
+                cnt = 4;
+                cylinder(h = arm_height, d = cap_width_multiplier * diam);
+                for (i = [0 : cnt]){
+                    rotate(i * 360/cnt, [0, 0, 1])
+                    translate([0, -arm_width/2, 0])
+                    cube([arm_length, arm_width, arm_height]);
+                }
+            }
+            translate([0, 0, -BLEED/2])
+            cylinder(h = arm_height + BLEED, d = diam + EASE);
+        }
+    }
+}
+
+module arm_cap(cap_width_multiplier = 2) {
+    cap_diam = 1 * AXLE_RADIUS;
+    cap_height =  1.5 * ROOF_HEIGHT;
+
+    color(COLOR_AXLE) {
+        // base straight
+        translate([0, 0, -RIG_CAP_BLEED_HEIGHT])
+        cylinder(h = RIG_CAP_BLEED_HEIGHT + BLEED, d = RIG_CAP_BLEED_DIAM);
+        // base chamfered
+        cylinder(h = 2 * RIG_CAP_BLEED_HEIGHT, d1 = RIG_CAP_BLEED_DIAM, d2 = cap_diam - BLEED);
+        // cap axle
+        cylinder(h = cap_height, d = cap_diam);
+        // arms guard
+        translate([0, 0, ROOF_HEIGHT])
+        cylinder(h = RIG_STR, d1 = cap_diam, d2 = cap_width_multiplier * RIG_STR);
+    }
+}
+
+module mounted_rotator() {
+    translate([0, 0, axle_ground_height_pegless() + bearing_height_total() + EASE]) {
+        arm_cap();
+        translate([0, 0, ROOF_HEIGHT + RIG_STR + EASE])
+        printable_arm_head();
+    }
+}
+
+// mounted_rig();
+// mounted_rotator();
+printable_rig();
+// printable_arm_head();
+
+// TODO - add caps to keep nuts covered?

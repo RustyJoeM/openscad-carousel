@@ -25,6 +25,8 @@ BASE_WALL_THICKNESS = 4;
 
 // Face, or, a wall of the carousel "shell".
 FACE_HEIGHT = 150;
+FACE_HEIGHT_ROOF_START_RATIO = 0.85;    // percentage of full wall height to be skewed
+
 FACE_THICKNESS = 5;
 // size of wall struts/doorframe
 BEAM_SIZE = 1.1 * FACE_THICKNESS;

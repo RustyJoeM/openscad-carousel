@@ -5,8 +5,8 @@ use <base.scad>;
 
 AXLE_TENON_THICKNESS = BASE_FLOOR_THICKNESS;
 
-AXLE_HEIGHT_TOTAL = FACE_DOOR_HEIGHT + BEAM_SIZE;   // ground level to bearing socket top (not including bearing peg)
-AXLE_HEIGHT_BASE_ABOVE = AXLE_HEIGHT_TOTAL - (BEARING_HEIGHT_BOTTOM + BEARING_SHELL_BOTTOM);  // ground level to axle peg
+AXLE_HEIGHT_TOTAL = FACE_HEIGHT * FACE_HEIGHT_ROOF_START_RATIO - bearing_height_bottom();   // ground level to bearing socket top (not including bearing peg)
+AXLE_HEIGHT_BASE_ABOVE = AXLE_HEIGHT_TOTAL - bearing_height_bottom();  // ground level to axle peg
 AXLE_HEIGHT_BASE_BELOW = AXLE_TENON_THICKNESS + BASE_FLOOR_THICKNESS; // below ground level height -> tenon + ground floor thickness
 
 AXLE_PEG_RAD = 0.5 * AXLE_RADIUS;
@@ -102,24 +102,3 @@ module printable_axle_bom() {
 // printable_axle_bearing();
 // printable_axle_base();
 printable_axle_bom();
-
-// module axle_arms() {
-//     arm_height = 2 * AXLE_RADIUS;
-//     arm_length = 8 * AXLE_RADIUS;
-//     arm_width = AXLE_RADIUS;
-
-//     color(COLOR_AXLE) {
-//         difference() {
-//             union() {
-//                 cylinder(h = arm_height, r = 2 * AXLE_RADIUS);
-//                 for (i = [0 : CAROUSEL_FACE_COUNT/2]){
-//                     rotate(2 * i * 360/CAROUSEL_FACE_COUNT, [0, 0, 1])
-//                     translate([0, -arm_width/2, 0])
-//                     cube([arm_length, arm_width, arm_height]);
-//                 }
-//             }
-//             translate([0, 0, -BLEED/2])
-//                 cylinder(h = arm_height + BLEED, r = AXLE_RADIUS + EASE);
-//         }
-//     }
-// }

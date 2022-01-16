@@ -1,6 +1,10 @@
 include <config.scad>;
 use <commons.scad>;
 
+function bearing_height_top() = BEARING_HEIGHT_TOP + BEARING_SHELL_TOP;
+function bearing_height_bottom() = BEARING_HEIGHT_BOTTOM + BEARING_SHELL_BOTTOM;
+function bearing_height_total() = bearing_height_top() + bearing_height_bottom() + EASE;
+
 module _bearing_socket(bearing_height, shell_height) {
     difference() {
         // socket body
@@ -24,7 +28,7 @@ module bearing_bottom() {
 }
 
 module bearing_top() {
-    total_height = BEARING_HEIGHT_TOP + BEARING_SHELL_TOP;
+    total_height = bearing_height_top();
     translate([0, 0, total_height])
     rotate([180, 0, 0])
     difference() {
@@ -33,8 +37,6 @@ module bearing_top() {
         bearing_top_hole();
     }
 }
-
-function mounted_bearing_height() = BEARING_HEIGHT_BOTTOM + BEARING_HEIGHT_TOP + BEARING_SHELL_THICKNESS + BEARING_SHELL_BOTTOM;
 
 // module printable_bearing_bom() {
 //     color(COLOR_AXLE) {
