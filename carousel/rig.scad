@@ -8,6 +8,8 @@ use <axle.scad>;
 RIG_CAP_BLEED_HEIGHT = 2;
 RIG_CAP_BLEED_DIAM = BEARING_DIAM_INNER;
 
+ROTATOR_FN = 6;
+
 module rig_shape() {
     inner_sin = sin(360/CAROUSEL_FACE_COUNT/2);
 
@@ -16,7 +18,7 @@ module rig_shape() {
         difference() {
             bearing_top();
             translate([0, 0, -BLEED])
-            cylinder(h = RIG_CAP_BLEED_HEIGHT + BLEED, d = RIG_CAP_BLEED_DIAM + EASE);
+            cylinder(h = RIG_CAP_BLEED_HEIGHT + BLEED, d = RIG_CAP_BLEED_DIAM + EASE, $fn = ROTATOR_FN);
         }
         // outer ring
         difference() {
@@ -26,7 +28,7 @@ module rig_shape() {
         }
         // iterate each face/wall spot
         dz = 0.5 * RIG_STR;
-        for (i = [0 : CAROUSEL_FACE_COUNT]){
+        for (i = [0 : CAROUSEL_FACE_COUNT]) {
             rotate(i * 360/CAROUSEL_FACE_COUNT, [0, 0, 1]) {
                 // star-beam
                 square_prism(RIG_STR, [BEARING_DIAM_OUTER/2, 0, dz], [RIG_MAX_R, 0, dz]);
@@ -94,26 +96,40 @@ module printable_arm_head(diam = RIG_STR, cap_width_multiplier = 2) {
                 }
             }
             translate([0, 0, -BLEED/2])
-            cylinder(h = arm_height + BLEED, d = diam + EASE);
+            cylinder(h = arm_height + BLEED, d = diam + 2*EASE, $fn = ROTATOR_FN);
         }
     }
 }
 
-module arm_cap(cap_width_multiplier = 2) {
-    cap_diam = 1 * AXLE_RADIUS;
-    cap_height =  1.5 * ROOF_HEIGHT;
+cap_diam = 1 * AXLE_RADIUS;
+cap_height =  1.5 * ROOF_HEIGHT;
 
-    color(COLOR_AXLE) {
-        // base straight
-        translate([0, 0, -RIG_CAP_BLEED_HEIGHT])
-        cylinder(h = RIG_CAP_BLEED_HEIGHT + BLEED, d = RIG_CAP_BLEED_DIAM);
-        // base chamfered
-        cylinder(h = 2 * RIG_CAP_BLEED_HEIGHT, d1 = RIG_CAP_BLEED_DIAM, d2 = cap_diam - BLEED);
-        // cap axle
-        cylinder(h = cap_height, d = cap_diam);
-        // arms guard
-        translate([0, 0, ROOF_HEIGHT])
-        cylinder(h = RIG_STR, d1 = cap_diam, d2 = cap_width_multiplier * RIG_STR);
+module printable_arm_cap_peg() {
+    xx = 2 * cap_diam;
+    yy = cap_diam/2 - EASE;
+
+    color(COLOR_AXLE)
+    translate([-xx/2, -yy/2, EASE/2])
+    cube([xx, yy, cap_diam/4 - EASE]);
+}
+
+module arm_cap(cap_width_multiplier = 2) {
+    color(COLOR_AXLE)
+    difference() {
+        union() {
+            // base straight
+            translate([0, 0, -RIG_CAP_BLEED_HEIGHT])
+            cylinder(h = RIG_CAP_BLEED_HEIGHT + BLEED, d = RIG_CAP_BLEED_DIAM, $fn = ROTATOR_FN);
+            // base chamfered
+            cylinder(h = 2 * RIG_CAP_BLEED_HEIGHT, d1 = RIG_CAP_BLEED_DIAM, d2 = cap_diam - BLEED, $fn = ROTATOR_FN);
+            // cap axle
+            cylinder(h = cap_height, d = cap_diam, $fn = ROTATOR_FN);
+            // arms guard
+            translate([0, 0, ROOF_HEIGHT])
+            cylinder(h = RIG_STR, d1 = cap_diam, d2 = cap_width_multiplier * RIG_STR, $fn = ROTATOR_FN);
+        }
+        translate([-BLEED/2, 0, ROOF_HEIGHT + RIG_STR + RIG_STR + cap_diam/8 + 2*EASE])
+        cube([cap_diam + BLEED, cap_diam/2, cap_diam/4], center = true);
     }
 }
 
@@ -122,6 +138,8 @@ module mounted_rotator() {
         arm_cap();
         translate([0, 0, ROOF_HEIGHT + RIG_STR + EASE])
         printable_arm_head();
+        translate([0, 0, ROOF_HEIGHT + RIG_STR + RIG_STR + 2*EASE])
+        printable_arm_cap_peg();
     }
 }
 
@@ -129,5 +147,6 @@ module mounted_rotator() {
 // mounted_rotator();
 printable_rig();
 // printable_arm_head();
+// printable_arm_cap_peg();
 
 // TODO - add caps to keep nuts covered?

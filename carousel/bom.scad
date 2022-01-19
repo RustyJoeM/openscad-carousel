@@ -4,6 +4,7 @@ use <wall-column.scad>;
 use <wall-roof.scad>;
 use <base.scad>;
 use <axle.scad>;
+use <rig.scad>;
 
 // raise $fn before generating model parts for smoother rounded surfaces, columns, etc.
 // our ideal number may vary - higher number may cause OpenSCAD to take longer to generate a model) as the first line of the bom script
@@ -43,10 +44,16 @@ $fn = 64;
 
 // printable_axle_bearing();   // 1
 
-    // next item needs only ONE variant to be printed, either all-in-one piece:
+    // next 1 item needs only ONE variant to be printed, either all-in-one piece:
 
 // printable_axle_base(); // 1
 
     // OR axle core separated into twwo halves and joining pegs
 
 // printable_axle_bom(); // 1
+
+    // rig
+
+// printable_rig(); // 1
+// printable_arm_head();   // 1
+// printable_arm_cap_peg();    // 1
