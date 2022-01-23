@@ -1,6 +1,6 @@
 # openscad-carousel
 
-Please note that this is **WORK IN PROGRESS**! Model may and most probably will change extensively without any backward parts compatibility!
+Please note that this is **WORK IN PROGRESS**! Model may change extensively without any backward parts compatibility!
 
 This tiny repo consists of [OpenSCAD](https://openscad.org) scripts that can generate a 3D model of a rotating carousel.
 
@@ -30,6 +30,5 @@ See [mounting-example.scad](mounting-example.scad) file for a simple example on 
 
 # TODO
 
-- decide on where to fixate the rotating bearing
-- fix rig
+- fix helpers/lance mounts to allow mounting models also to mid-sections, not only ring rib arms
 - finalize, humanize, clean-up the all modules

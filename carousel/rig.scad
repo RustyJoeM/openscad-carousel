@@ -4,15 +4,40 @@ use <commons.scad>;
 use <bearing.scad>;
 use <nut.scad>;
 use <axle.scad>;
+use <lance.scad>;
 
 RIG_CAP_BLEED_HEIGHT = 2;
 RIG_CAP_BLEED_DIAM = BEARING_DIAM_INNER;
 
 ROTATOR_FN = 6;
 
-module rig_shape() {
+module rig_ribs() {
     inner_sin = sin(360/CAROUSEL_FACE_COUNT/2);
+    // iterate each face/wall spot
+    dz = 0.5 * RIG_STR;
+    for (i = [0 : CAROUSEL_FACE_COUNT]) {
+        rotate(i * 360/CAROUSEL_FACE_COUNT, [0, 0, 1]) {
+            // star-beam
+            square_prism(RIG_STR, [BEARING_DIAM_OUTER/2, 0, dz], [RIG_MAX_R, 0, dz]);
+            // cross-beams
+            for (frac = RIG_RING_POSITIONS) {
+                ring_r = frac * RIG_MAX_R;
+                translate([ring_r, 0, 0])
+                rotate([0, 0, 180 - FACE_ANGLE/2])
+                difference() {
+                    dx = 2 * ring_r * inner_sin;
+                    square_prism(RIG_STR, [0, 0, dz], [dx, 0, dz]);
+                    translate([dx/2, 0, -BLEED])
+                    mounted_lance(with_ease = true);
+                }
+            }
+        }
+    }
+}
 
+function lance_dx_offset(frac) = frac * RIG_MAX_R - BEAM_SIZE/4;
+
+module rig_shape() {
     color(COLOR_AXLE) {
         // cut out nest for top arm rotator
         difference() {
@@ -26,18 +51,17 @@ module rig_shape() {
             translate([0, 0, -0.5 * BLEED])
             cylinder(h = RIG_HEIGHT + BLEED, r = RIG_MAX_R - RIG_STR);
         }
-        // iterate each face/wall spot
-        dz = 0.5 * RIG_STR;
-        for (i = [0 : CAROUSEL_FACE_COUNT]) {
-            rotate(i * 360/CAROUSEL_FACE_COUNT, [0, 0, 1]) {
-                // star-beam
-                square_prism(RIG_STR, [BEARING_DIAM_OUTER/2, 0, dz], [RIG_MAX_R, 0, dz]);
-                // cross-beams
-                for (frac = RIG_RING_POSITIONS) {
-                    ring_r = frac * RIG_MAX_R;
-                    translate([ring_r, 0, 0])
-                    rotate([0, 0, 180 - FACE_ANGLE/2])
-                    square_prism(RIG_STR, [0, 0, dz], [2 * ring_r * inner_sin, 0, dz]);
+        // ribs with lance holes
+        difference() {
+            rig_ribs();
+            for (i = [0 : CAROUSEL_FACE_COUNT]) {
+                rotate(i * 360/CAROUSEL_FACE_COUNT, [0, 0, 1]) {
+                    // #square_prism(RIG_STR, [BEARING_DIAM_OUTER/2, 0, dz], [RIG_MAX_R, 0, dz]);
+                    for (frac = RIG_RING_POSITIONS) {
+                        ring_r = lance_dx_offset(frac);
+                        translate([ring_r, 0, -BLEED])
+                        mounted_lance(with_ease = true);
+                    }
                 }
             }
         }
@@ -72,8 +96,10 @@ module printable_rig() {
     }
 }
 
+function mounted_rig_height() = axle_ground_height_pegless() + bearing_height_total();
+
 module mounted_rig() {
-    dz = axle_ground_height_pegless() + bearing_height_total();
+    dz = mounted_rig_height();
     translate([0, 0, dz])
     rotate([180, 0, 0])
     printable_rig();
@@ -134,7 +160,7 @@ module arm_cap(cap_width_multiplier = 2) {
 }
 
 module mounted_rotator() {
-    translate([0, 0, axle_ground_height_pegless() + bearing_height_total() + EASE]) {
+    translate([0, 0, mounted_rig_height() + EASE]) {
         arm_cap();
         translate([0, 0, ROOF_HEIGHT + RIG_STR + EASE])
         printable_arm_head();

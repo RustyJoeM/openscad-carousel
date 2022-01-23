@@ -54,7 +54,7 @@ BEARING_SHELL_TOP = 7;
 BEARING_PEG_OVERRUN = BEARING_HEIGHT_TOP;
 
 // Axle rotating inside carousel.
-AXLE_RADIUS = 1.5 * FACE_THICKNESS;
+AXLE_RADIUS = FACE_THICKNESS;
 
 // Rotating rig carrying the seats.
 RIG_HEIGHT = 6;
