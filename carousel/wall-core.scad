@@ -2,7 +2,7 @@ include <config.scad>;
 include <wall-commons.scad>;
 use <wall-column.scad>;
 use <wall-struts-pegs.scad>;
-use <wall-roof.scad>;
+use <roof.scad>;
 
 module wall_core_shape() {
     _face_xy_points = [

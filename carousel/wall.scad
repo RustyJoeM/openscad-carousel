@@ -5,7 +5,7 @@ include <wall-commons.scad>;
 use <wall-core.scad>;
 use <wall-column.scad>;
 use <wall-struts.scad>;
-use <wall-roof.scad>;
+use <roof.scad>;
 
 module mounted_wall(roof_elevated = false) {
     rotate([90, 0, 0]) {
