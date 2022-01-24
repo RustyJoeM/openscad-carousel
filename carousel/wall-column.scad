@@ -52,6 +52,23 @@ module printable_column_peg() {
     cube([x, y, z], center = true);
 }
 
+module printable_column_bom() {
+    dx = 1.5 * _COLUMN_DIAM;
+    dy = - 0.5 * COLUMN_HEIGHT;
+
+    translate([dx, dy, 0])
+    printable_column_half();
+
+    translate([2 * dx, dy, 0])
+    printable_column_half();
+
+    for (i = [1:4]) {
+        translate([0, dy + 2 * JOINT_DIMENSIONS.y * i, 0])
+        printable_column_peg();
+    }
+}
+
 // mounted_column();
 // column_side_holes();
-printable_column_half();
+// printable_column_half();
+printable_column_bom();

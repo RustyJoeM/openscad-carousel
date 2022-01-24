@@ -26,8 +26,15 @@ $fn = 64;
 // -------- columns -----------------------------------------------
 
 // use <wall-column.scad>;
+
+    // either standalone parts:
+
 // printable_column_half();    // 2*X
 // printable_column_peg();     // 4*X
+
+    // or single bom for each column
+
+// printable_column_bom();     // X
 
 // -------- roof --------------------------------------------------
 
