@@ -25,7 +25,7 @@ roof_canopy_overhang = 0.75 * canopy_height;
 inner_hole_radius = 0.25 * CAROUSEL_ESCRIBED_RADIUS;
 top_alpha = 360/CAROUSEL_FACE_COUNT;
 top_beta = 90 - top_alpha/2;
-// (ihr / CAROUSEL_INSCIRBED_RADIUS) == (ty / FACE_APOTHEM_LEN)
+// (ihr / CAROUSEL_INSCRIBED_RADIUS) == (ty / FACE_APOTHEM_LEN)
 ty = FACE_APOTHEM_LEN * inner_hole_radius / CAROUSEL_ESCRIBED_RADIUS;
 tx = cos(top_beta) * inner_hole_radius;
 

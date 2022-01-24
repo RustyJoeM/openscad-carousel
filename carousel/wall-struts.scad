@@ -54,7 +54,7 @@ module _cut_struts() {
     color(COLOR_STRUTS) {
         intersection() {
             difference() {
-                // move structs on top of wall core
+                // move struts on top of wall core
                 translate([0, 0, 0.5 * STRUT_OVERRUN])
                 _uncut_struts();
                 // cut off the parts inside of door area

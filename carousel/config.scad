@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // Configuration of the carousel and its components.
 //
-// All the values beyod "---- derived" string in each of the sections should
+// All the values beyond "---- derived" string in each of the sections should
 // not be modified manually, as they are derived from the previously defined
 // parameters in some way...
 // ----------------------------------------------------------------------------

@@ -49,7 +49,7 @@ $fn = 64;
     // or separated into X-th fraction segment
 // printable_base_segment();   // X
     // another alternative is bigger N-th pieces,
-    // where N can be arbitrarily chosen from the interval of 1..X
+    // where N can be arbitrarily chosen from the interval of 2..X
 // printable_base_segment(n = N);  // N
 
 // -------- axle --------------------------------------------------
@@ -58,7 +58,7 @@ $fn = 64;
 // printable_axle_bearing();   // 1
     // next 1 item needs only ONE variant to be printed, either all-in-one piece:
 // printable_axle_base(); // 1
-    // OR axle core separated into twwo halves and joining pegs
+    // OR axle core separated into two halves and joining pegs
 // printable_axle_bom(); // 1
 
 // -------- rig ---------------------------------------------------
@@ -70,7 +70,7 @@ $fn = 64;
 
 // -------- mounting lances ---------------------------------------
 
-    // finally, for each of the models being mounted onto carusel following pieces:
+    // finally, for each of the models being mounted onto carousel following pieces:
 
 // use <lance.scad>;
 // printable_mounting_lance_cap();   // 1

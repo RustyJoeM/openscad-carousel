@@ -25,15 +25,15 @@ module printable_column_half() {
 
     cutoff_width = _COLUMN_DIAM + BLEED;
     cutoff_length = COLUMN_HEIGHT + BLEED;
-    cuttof_height = _COLUMN_DIAM/2 + BLEED;
+    cutoff_height = _COLUMN_DIAM/2 + BLEED;
 
     color(COLOR_STRUTS)
     difference() {
         rotate([-90, 0, 0])
         mounted_column();
         // remove bottom half of column
-        translate([0,  cutoff_length/2 - BLEED/2, -cuttof_height/2])
-            cube([cutoff_width, cutoff_length, cuttof_height], center = true);
+        translate([0,  cutoff_length/2 - BLEED/2, -cutoff_height/2])
+            cube([cutoff_width, cutoff_length, cutoff_height], center = true);
         // and make holes for inter-connecting pegs
         for (fy = joint_y_pos) {
             translate([0, fy * COLUMN_HEIGHT, JOINT_DIMENSIONS.z/2 - BLEED])
